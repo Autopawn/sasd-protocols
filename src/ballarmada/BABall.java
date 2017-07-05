@@ -18,7 +18,7 @@ public class BABall{
     public BABall(int player, int arena_size, Random rand){
         this.player = player;
         this.reset(arena_size,rand);
-        button_states = new boolean[buttons];
+		if(player>=0) button_states = new boolean[buttons];
     }
 
     void update(final TreeSet<BAEvent> events){
