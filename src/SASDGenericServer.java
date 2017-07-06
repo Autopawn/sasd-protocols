@@ -1,8 +1,6 @@
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,7 +24,8 @@ public class SASDGenericServer extends ServerSocket {
     public void run() {
         while (running) {
             try {
-                SASDClientThread client = (SASDClientThread) accept();
+                SASDClientThread client = new SASDClientThread(accept());
+                clients.add(client);
                 client.start(this);
 
             } catch (IOException e) {
