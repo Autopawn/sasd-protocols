@@ -1,11 +1,13 @@
+import java.io.Serializable;
+
 import java.lang.Integer;
 import java.util.Random;
 import java.util.TreeSet;
 
-public class BABall{
+public class BABall implements Serializable{
     public static final int accel = 2;
     public static final int max_speed = 64;
-    public static final int ball_radious = 64;
+    public static final int ball_radious = 32;
     public static final int buttons = 4;
 
     public int player; // -1 indicates yellow ball.
@@ -92,9 +94,9 @@ public class BABall{
         boolean center = (player>=0);
         px = 0;
         py = 0;
-        while(center != (Math.abs(px)>arena_size/3 || Math.abs(py)>arena_size/3)){
-            px = (rand.nextInt()%arena_size)-arena_size/2;
-            py = (rand.nextInt()%arena_size)-arena_size/2;
+        while(center != (Math.abs(px)<arena_size/3 && Math.abs(py)<arena_size/3)){
+            px = rand.nextInt(arena_size)-arena_size/2;
+            py = rand.nextInt(arena_size)-arena_size/2;
         }
         vx = 0;
         vy = 0;

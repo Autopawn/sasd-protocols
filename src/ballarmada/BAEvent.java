@@ -1,4 +1,6 @@
-public class BAEvent{
+import java.io.Serializable;
+
+public class BAEvent implements Serializable{
     int player;
     int button;
     // -1 = Creation of the player.

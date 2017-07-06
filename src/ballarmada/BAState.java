@@ -3,11 +3,13 @@ import java.io.ObjectInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 
+import java.io.Serializable;
+
 import java.util.Random;
 import java.util.TreeSet;
 import java.util.LinkedList;
 
-public class BAState{
+public class BAState implements Serializable{
     public static final int arena_size = 1000;
 
     LinkedList<BABall> balls;
