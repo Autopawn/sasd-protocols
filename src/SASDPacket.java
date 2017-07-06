@@ -6,4 +6,8 @@ public class SASDPacket implements Serializable {
     public SASDPacket(int id) {
         this.id = id;
     }
+
+    public int getId() {
+        return id;
+    }
 }
