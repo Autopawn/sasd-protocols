@@ -1,7 +1,12 @@
+import java.io.IOException;
 import java.net.Socket;
 
-public class SASDClientThread extends Socket implements Runnable {
+public class SASDClientThread extends SASDPacketBay implements Runnable {
     private SASDGenericServer server;
+
+    SASDClientThread(Socket socket) throws IOException {
+        super(socket);
+    }
 
     @Override
     public void run() {
