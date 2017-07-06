@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public class BAGameplay extends JPanel implements KeyListener,ActionListener{
-	public static final int delay = 30;
+	public static final int delay = 20;
 	private Timer clock;
 	public BATrace trace;
 	public int display_time;
@@ -33,9 +33,7 @@ public class BAGameplay extends JPanel implements KeyListener,ActionListener{
 
 	public void display(Graphics g){
 		// Draw state: //TODO: Change time to the right one.
-		System.out.println("Getting: "+display_time);
 		BAState state = trace.get_state_at(display_time);
-		System.out.println("Displaying: "+display_time);
 		int sizex = getWidth();
 		int sizey = getHeight();
 		float scale = Math.min(sizex,sizey)/1.2f/BAState.arena_size;
@@ -66,15 +64,30 @@ public class BAGameplay extends JPanel implements KeyListener,ActionListener{
 	@Override
 	public void keyPressed(KeyEvent ev){
 		if(ev.getKeyCode()==KeyEvent.VK_RIGHT){
+			trace.insert_event(display_time,new BAEvent(0,0,true));
+		}else if(ev.getKeyCode()==KeyEvent.VK_UP){
+			trace.insert_event(display_time,new BAEvent(0,1,true));
+		}else if(ev.getKeyCode()==KeyEvent.VK_LEFT){
+			trace.insert_event(display_time,new BAEvent(0,2,true));
+		}else if(ev.getKeyCode()==KeyEvent.VK_DOWN){
+			trace.insert_event(display_time,new BAEvent(0,3,true));
+		}
+	}
 
+	@Override
+	public void keyReleased(KeyEvent ev){
+		if(ev.getKeyCode()==KeyEvent.VK_RIGHT){
+			trace.insert_event(display_time,new BAEvent(0,0,false));
+		}else if(ev.getKeyCode()==KeyEvent.VK_UP){
+			trace.insert_event(display_time,new BAEvent(0,1,false));
+		}else if(ev.getKeyCode()==KeyEvent.VK_LEFT){
+			trace.insert_event(display_time,new BAEvent(0,2,false));
+		}else if(ev.getKeyCode()==KeyEvent.VK_DOWN){
+			trace.insert_event(display_time,new BAEvent(0,3,false));
 		}
 	}
 
 	@Override
 	public void keyTyped(KeyEvent ev){
-	}
-
-	@Override
-	public void keyReleased(KeyEvent ev){
 	}
 }

@@ -1,6 +1,13 @@
 import java.io.Serializable;
 
-public class BAEvent implements Serializable{
+import java.lang.Comparable;
+
+public class BAEvent implements Serializable,Comparable<BAEvent>{
+	public BAEvent(int player, int button, boolean state){
+		this.player = player;
+		this.button = button;
+		this.state = state;
+	}
     int player;
     int button;
     // -1 = Creation of the player.
@@ -12,5 +19,13 @@ public class BAEvent implements Serializable{
     boolean state;
     // 0 = Released.
     // 1 = Pressed.
-    int time;
+	@Override
+	public int compareTo(BAEvent other) {
+		int v1 = player-other.player;
+		if(v1!=0) return v1;
+		int v2 = button-other.button;
+		if(v2!=0) return v2;
+		if(state==other.state) return 0;
+		else return state?1:-1;
+	}
 }

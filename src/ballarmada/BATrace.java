@@ -21,7 +21,6 @@ public class BATrace{
 
 	private TreeSet<BAEvent> get_events_at(int time){
 		int pos_at_events = init_time+events.size()-1-time;
-		System.out.println("post_at_events"+pos_at_events);
 		if(pos_at_events>=events.size()) return null;
 		//^ There is no registered events, time is before initing.
 		while(pos_at_events<0){
@@ -45,15 +44,16 @@ public class BATrace{
 		return states.get(pos_at_states).copy();
 	}
 
-	public void insert_event(int time, BAEvent event){
+	public boolean insert_event(int time, BAEvent event){
 		TreeSet<BAEvent> events_at_time = get_events_at(time);
-		if(events_at_time==null) return;
+		if(events_at_time==null) return false;
 		events_at_time.add(event);
 		// Delete computed states after that event:
 		int pos_at_states = init_time+states.size()-1-time;
 		for(int k=0;k<pos_at_states;k++){
 			states.removeFirst();
 		}
+		return true;
 	}
 
 	public void rebase_state(int init_time, BAState init_state){
