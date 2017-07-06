@@ -23,19 +23,28 @@ public class BABall implements Serializable{
 		if(player>=0) button_states = new boolean[buttons];
     }
 
-    void update(final TreeSet<BAEvent> events){
-        // React to events:
-        for(BAEvent ev:events){
-            if(ev.player == player && 0<=ev.button && ev.button<buttons){
-                button_states[ev.button] = ev.state;
-            }
-        }
-        // Update speed, take care that it doesnt exceed max_speed.
-        vx += (button_states[0]?1:0)*accel;
-        vx -= (button_states[2]?1:0)*accel;
+    void update(int arena_size, final TreeSet<BAEvent> events){
+		if(player>=0){
+	        // React to events:
+	        for(BAEvent ev:events){
+	            if(ev.player == player && 0<=ev.button && ev.button<buttons){
+	                button_states[ev.button] = ev.state;
+	            }
+	        }
+	        // Update speed, according to buttons.
+	        vx += (button_states[0]?1:0)*accel;
+	        vx -= (button_states[2]?1:0)*accel;
+			vy += (button_states[3]?1:0)*accel;
+			vy -= (button_states[1]?1:0)*accel;
+		}else{
+			// Update speed, according with dummy AI:
+			if(px>=arena_size/3) vx-= accel;
+			if(px<=-arena_size/3) vx+= accel;
+			if(py>=arena_size/3) vy-= accel;
+			if(py<=-arena_size/3) vy+= accel;
+		}
+		// Limit speed:
         if(Math.abs(vx)>max_speed) vx = Integer.signum(vx)*max_speed;
-        vy += (button_states[3]?1:0)*accel;
-        vy -= (button_states[1]?1:0)*accel;
         if(Math.abs(vy)>max_speed) vy = Integer.signum(vy)*max_speed;
         // Update position:
         px += vx;

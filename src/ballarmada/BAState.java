@@ -56,7 +56,7 @@ public class BAState implements Serializable{
         }
         // Update balls:
         for(BABall ball:next.balls){
-            ball.update(events);
+            ball.update(arena_size,events);
         }
         // Collide balls:
         LinkedList<Integer> dead_balls = new LinkedList<Integer>();

@@ -9,17 +9,18 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public class BAGameplay extends JPanel implements KeyListener,ActionListener{
-	public static final int fps = 60;
-	private Timer timer;
+	public static final int delay = 30;
+	private Timer clock;
 	public BATrace trace;
+	public int display_time;
 
 	public BAGameplay(BATrace trace){
 		addKeyListener(this);
 		setFocusable(true);
 		setFocusTraversalKeysEnabled(false);
 		//
-		//timer = new Timer(fps,this);
-		//timer.start();
+		clock = new Timer(delay,this);
+		clock.start();
 		//
 		this.trace = trace;
 	}
@@ -32,7 +33,9 @@ public class BAGameplay extends JPanel implements KeyListener,ActionListener{
 
 	public void display(Graphics g){
 		// Draw state: //TODO: Change time to the right one.
-		BAState state = trace.get_state_at(0);
+		System.out.println("Getting: "+display_time);
+		BAState state = trace.get_state_at(display_time);
+		System.out.println("Displaying: "+display_time);
 		int sizex = getWidth();
 		int sizey = getHeight();
 		float scale = Math.min(sizex,sizey)/1.2f/BAState.arena_size;
@@ -54,8 +57,10 @@ public class BAGameplay extends JPanel implements KeyListener,ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent ev){
+		if (ev.getSource() == clock){
+			display_time+=1;
+		}
 		repaint();
-		//timer.restart();
 	}
 
 	@Override

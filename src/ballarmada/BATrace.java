@@ -15,16 +15,18 @@ public class BATrace{
 		states = new LinkedList<BAState>();
 		states.add(init_state);
 		events = new LinkedList<TreeSet<BAEvent>>();
+		events.add(new TreeSet<BAEvent>());
 		this.init_time = init_time;
 	}
 
 	private TreeSet<BAEvent> get_events_at(int time){
 		int pos_at_events = init_time+events.size()-1-time;
+		System.out.println("post_at_events"+pos_at_events);
 		if(pos_at_events>=events.size()) return null;
 		//^ There is no registered events, time is before initing.
 		while(pos_at_events<0){
 			events.addFirst(new TreeSet<BAEvent>());
-			pos_at_events-=1;
+			pos_at_events+=1;
 		}
 		return events.get(pos_at_events);
 	}
@@ -68,6 +70,7 @@ public class BATrace{
 			surviving_events--;
 		}
 		while(surviving_events>0) events.add(new TreeSet<BAEvent>());
+		if(events.size()==0) events.add(new TreeSet<BAEvent>());
 		this.init_time = init_time;
 	}
 }
