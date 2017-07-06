@@ -88,11 +88,11 @@ public class BABall implements Serializable{
                 }else if(delta_dif>0){
                     int aux = ball_a.vx;
                     ball_a.vx = ball_b.vx;
-                    ball_b.vx = ball_a.vx;
+                    ball_b.vx = aux;
                 }else if(delta_dif<0){
                     int aux = ball_a.vy;
                     ball_a.vy = ball_b.vy;
-                    ball_b.vy = ball_a.vy;
+                    ball_b.vy = aux;
                 }
             }
         }

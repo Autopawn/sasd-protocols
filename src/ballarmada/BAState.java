@@ -10,7 +10,7 @@ import java.util.TreeSet;
 import java.util.LinkedList;
 
 public class BAState implements Serializable{
-    public static final int arena_size = 1000;
+    public static final int arena_size = 1500;
 
     LinkedList<BABall> balls;
     Random rand;

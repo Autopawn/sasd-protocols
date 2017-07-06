@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public class BAGameplay extends JPanel implements KeyListener,ActionListener{
-	public static final int delay = 20;
+	public static final int delay = 25;
 	private Timer clock;
 	public BATrace trace;
 	public int display_time;

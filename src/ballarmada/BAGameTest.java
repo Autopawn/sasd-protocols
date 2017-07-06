@@ -3,12 +3,13 @@ import java.awt.EventQueue;
 
 public class BAGameTest extends JFrame{
 	public BAGameTest(){
-		BAState inistate = new BAState(10,9001);
+		int nBalls = 4;
+		BAState inistate = new BAState(nBalls,9001);
 		inistate.balls.add(new BABall(0,BAState.arena_size,inistate.rand));
 		//
 		BATrace trace = new BATrace(0,inistate);
 		//
-		setSize(500,500);
+		setSize(600,600);
 		setLocationRelativeTo(null);
 		setTitle("Ball Armada - Game Test");
 		setResizable(false);
