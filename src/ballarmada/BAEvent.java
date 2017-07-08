@@ -1,5 +1,6 @@
-import java.io.Serializable;
+package ballarmada;
 
+import java.io.Serializable;
 import java.lang.Comparable;
 
 public class BAEvent implements Serializable,Comparable<BAEvent>{

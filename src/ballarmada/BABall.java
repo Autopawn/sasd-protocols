@@ -1,3 +1,5 @@
+package ballarmada;
+
 import java.io.Serializable;
 
 import java.lang.Integer;
