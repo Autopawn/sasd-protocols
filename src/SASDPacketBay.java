@@ -10,11 +10,11 @@ public class SASDPacketBay {
         s = socket;
     }
 
-    SASDPacket recvPacket() throws IOException, ClassNotFoundException {
+    synchronized SASDPacket recvPacket() throws IOException, ClassNotFoundException {
         return (SASDPacket) new ObjectInputStream(s.getInputStream()).readObject();
     }
 
-    void sendPacket(SASDPacket packet) throws IOException {
+    synchronized void sendPacket(SASDPacket packet) throws IOException {
         new ObjectOutputStream(s.getOutputStream()).writeObject(packet);
         s.getOutputStream().flush();
     }
@@ -26,5 +26,20 @@ public class SASDPacketBay {
     @Override
     protected void finalize() throws Throwable {
         s.close();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SASDPacketBay that = (SASDPacketBay) o;
+
+        return s != null ? s.equals(that.s) : that.s == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return s != null ? s.hashCode() : 0;
     }
 }

@@ -1,5 +1,7 @@
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class SASDClientThread extends SASDPacketBay implements Runnable {
     private SASDGenericServer server;
@@ -10,7 +12,18 @@ public class SASDClientThread extends SASDPacketBay implements Runnable {
 
     @Override
     public void run() {
-        server.removeClient(this);
+        while (server.isRunning()) {
+            try {
+                SASDPacket packet = recvPacket();
+                server.broadcastPacket(packet,
+                        Collections.singletonList(this));
+
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //server.removeClient(this);
     }
 
     /**

@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,8 +18,22 @@ public class SASDGenericServer extends ServerSocket {
         LOGGER.log(Level.INFO, "Server bound at port {0}", port);
     }
 
-    public synchronized void removeClient(SASDClientThread client) {
-        clients.remove(client);
+    public void removeClient(SASDClientThread client) {
+        synchronized (clients) {
+            clients.remove(client);
+        }
+    }
+
+    public void broadcastPacket(SASDPacket packet, List<SASDClientThread> ignoreList) throws IOException {
+        for (SASDClientThread client : clients) {
+            if (!ignoreList.contains(client)) {
+                client.sendPacket(packet);
+            }
+        }
+    }
+
+    public void broadcastPacket(SASDPacket packet) throws IOException {
+        broadcastPacket(packet, Collections.emptyList());
     }
 
     public void run() {
@@ -38,5 +53,9 @@ public class SASDGenericServer extends ServerSocket {
     protected void finalize() throws Throwable {
         // Close Server socket on object destruction
         close();
+    }
+
+    public boolean isRunning() {
+        return running;
     }
 }

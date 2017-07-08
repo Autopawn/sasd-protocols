@@ -7,7 +7,7 @@ public class BAGameTest extends JFrame{
 	public BAGameTest(){
 		int nBalls = 4;
 		BAState inistate = new BAState(nBalls,9001);
-		inistate.balls.add(new BABall(0,BAState.arena_size,inistate.rand));
+		inistate.balls.add(new BABall(0, BAState.arena_size, inistate.rand));
 		//
 		BATrace trace = new BATrace(0,inistate);
 		//
