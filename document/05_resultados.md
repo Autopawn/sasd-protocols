@@ -1,1 +1,0 @@
-- Identificar cualitativamente los resultados del retraso de la red en cada uno de los métodos.

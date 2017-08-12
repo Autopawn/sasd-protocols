@@ -1,0 +1,79 @@
+\documentclass[twoside,twocolumn,letterpaper,11pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{fourier}
+
+\usepackage[spanish]{babel} % Language hyphenation and typographical rules
+
+\usepackage{enumitem} % Customized lists
+\setlist[itemize]{noitemsep} % Make itemize lists more compact
+
+% \usepackage{abstract} % Allows abstract customization
+% \renewcommand{\abstractnamefont}{\normalfont\bfseries}
+% % ^ Set the "Abstract" text to bold
+% \renewcommand{\abstracttextfont}{\normalfont\small\itshape}
+% % ^ Set the abstract itself to small italic text
+
+\usepackage{graphicx}
+
+\usepackage{fancyhdr} % Headers and footers
+\pagestyle{fancy} % All pages have headers and footers
+\fancyhead{} % Blank out the default header
+\fancyfoot{} % Blank out the default footer
+\fancyhead[C]{Proyecto de Investigación $\bullet$ Agosto 2017}
+% ^ Custom header text
+\fancyfoot[RO,LE]{\thepage} % Custom footer text
+
+% \usepackage{titling} % Customizing the title section
+
+\usepackage[hidelinks=true]{hyperref} % For hyperlinks in the PDF
+\usepackage[font=footnotesize,labelfont=bf]{caption}
+
+\usepackage{geometry}
+\geometry{letterpaper}
+
+\title{\Large Proyecto de investigación\\
+\huge Análisis de arquitecturas e implementación de protocolos para sincronizar una aplicación interactiva en red.
+\\ \Large Seminario de Arquitecturas de Sistemas Distribuidos\\
+\small U. Técnica Federico Santa María, Departamento de Informática}
+% ^ Article title
+
+\author{Francisco Casas Barrientos\\
+       \texttt{\small\href{mailto:francisco.casas.13@sansano.usm.cl}{francisco.casas.13@sansano.usm.cl}}
+\and
+Rodolfo Castillo Mateluna\\
+       \small\texttt{\href{mailto:rodolfo.castillo.13@sansano.usm.cl}{rodolfo.castillo.13@sansano.usm.cl}}
+\\
+}
+\date{\today} % Leave empty to omit a date
+% \renewcommand{\maketitlehookd}{%
+% }
+
+\setlength\parindent{0pt}
+
+\begin{document}
+
+\maketitle
+
+\input{00_intro}
+
+\input{01_modelos_consistencia}
+
+\input{02_protocolos}
+
+\input{03_arquitecturas}
+
+\input{04_implementacion}
+
+\input{05_resultados}
+
+\input{06_tabla_protocolos}
+
+\input{07_tabla_arquitecturas}
+
+\input{08_conclusiones}
+
+\bibliographystyle{plain}
+\bibliography{main}{}
+
+\end{document}

@@ -1,4 +1,0 @@
-- Timewarp
-- Perceptive consistency
-- Trailing state syncronization
-- Dead Reckoning

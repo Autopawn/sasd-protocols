@@ -1,3 +1,11 @@
+# LaTeX compilation
+*.pdf
+*.aux
+*.blg
+*.bbl
+*.out
+
+
 # Compiled class file
 *.class
 

@@ -43,3 +43,9 @@ Lag can be simulated on three possible ways: server-client, client-server, and c
 * **Function of the server:** All clients send their actions to the server, which holds the true version of the reality and sends it to the clients periodically. In the meantime the clients move the simulation forward locally.
 
 * **Responsivity:** The actions are perceived by a client after they reach the server and the state comes back.
+
+## Document compilation instructions
+
+Required packages:
+
+- `texlive-fourier`

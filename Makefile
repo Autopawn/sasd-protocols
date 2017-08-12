@@ -8,3 +8,9 @@ ballarmada:
 	cd src/ballarmada; javac BAGameTest.java
 run:
 	cd src/ballarmada; java BAGameTest
+document:
+	cd tex; pdflatex main.tex
+	cd tex; bibtex main
+	cd tex; pdflatex main.tex
+	cd tex; pdflatex main.tex
+	mv tex/main.pdf main.pdf
