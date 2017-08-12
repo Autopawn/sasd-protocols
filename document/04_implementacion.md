@@ -1,0 +1,5 @@
+
+Descripción del juego de pruebas
+- Implementación de los protocolos y cómo se diseñó un sistema general para tratar con todos ellos.
+- Implementación de las simulaciones de latencia y pérdida de paquetes.
+- Setup de los nodos en la red.

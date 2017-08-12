@@ -1,0 +1,6 @@
+Tabla comparativa de las arquitecturas, sobre:
+- Consistencia y responsividad
+- Seguridad
+- Escalabilidad
+
+Clasificar según 5° paper del informe de avance.

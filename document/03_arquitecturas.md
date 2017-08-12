@@ -1,0 +1,4 @@
+- Simulator-Centric
+- Darkstar
+- Peer-to-peer
+- Esquema comentado por Cronin, Kurc, Filstrup y Jamin (for mirrored game architectures).
