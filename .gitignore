@@ -5,7 +5,6 @@
 *.bbl
 *.out
 
-
 # Compiled class file
 *.class
 
@@ -32,3 +31,7 @@ hs_err_pid*
 # IntelliJ IDEA config
 .idea
 *.iml
+
+# Mac
+.DS_Store
+tex/.texpadtmp
