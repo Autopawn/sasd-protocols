@@ -2,7 +2,14 @@
 
 % Explicación de los modelos de consistencia en general.
 
+El principal problema a resolver en una simulación o aplicación distribuida es la \textbf{consistencia}, que se entiende cómo la capacidad de encontrar el orden correcto de las operaciones que dependen entre sí.
+
+Entre los métodos que han surgido para resolver esta problemática, es emblemático el de los relojes lógicos de L. Lamport \cite{lamport1978time}. Éste último y sus derivados están enfocados en problemas \textbf{discretos}, garantizando que la secuencia correcta de eventos haya sido propagada entre los participantes resultando en un estado coherente entre ellos. Sin embargo, los videojuegos se tratan de problemas \textbf{continuos} en que los cambios de estado no dependen sólo de eventos sino también del transcurrir del tiempo,
+no siendo una opción detener la ejecución a la espera de un evento, ya que se requiere que los resultados se vean reflejados como si los eventos hubieran sido ejecutadas en el punto que les corresponde en la línea temporal\cite{mauve2004local}.
+
 % Explicar los presentados en los papers vistos.
+
+% TODO: Explicar más protocolos faltantes.
 
 \subsection{Perceptive consistency}
 

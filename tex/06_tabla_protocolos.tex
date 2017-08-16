@@ -6,3 +6,31 @@
 % - Escalabilidad
 %
 % Clasificar según 3° paper del informe de avance.
+
+\small
+\begin{longtable}{|p{2cm}|p{4cm}|p{4cm}|p{4cm}|}
+\hline
+\textbf{Protocolo} & \textbf{Consistencia vs responsividad} & \textbf{Seguridad} & \textbf{Escalabilidad} \\ \hline
+Centralizado con \emph{dead-reckoning} &
+consistencia y responsividad &
+seguridad &
+escalabilidad \\
+\hline
+Time-warp &
+consistencia y responsividad &
+seguridad &
+Abstrae la programación del juego \newline
+Se puede extender a varios clientes sin modificar el código, pero por ser \emph{p2p} está limitado por la cantidad de conexiónes, requiriendo un método para estructurar la red más complejo que conectar todos con todos. \\
+\hline
+Fast event ordering &
+consistencia y responsividad &
+seguridad &
+escalabilidad \\
+\hline
+Trailing State Syncronization &
+consistencia y responsividad &
+seguridad &
+escalabilidad \\
+\hline
+\end{longtable}
+\normalsize
