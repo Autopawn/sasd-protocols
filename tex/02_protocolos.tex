@@ -1,6 +1,68 @@
 \section{Protocolos}
 
-% Timewarp
-% Perceptive consistency
-% Trailing state syncronization
-% Dead Reckoning
+% Do not fly too near the sun, Icarus.
+
+%TODO: here.
+
+A continuación se describen los protocolos implementados, cada uno diseñado para ser representativo de una técnica particular para lograr simulaciones distribuídas.
+
+Para todos los protocolos que se revisarán en este trabajo se llegó a la conclusión de que la forma más simple de trabajar es manteniendo simulaciones locales completas del estado del juego que son afectadas por eventos de teclado de los clientes, específicamente pulsar y soltar teclas.
+
+El tratar todo el estado del juego como un sólo objeto tiene la desventaja de que todos los nodos deben realizar todo el procesamiento de la partida, en contraste con lo que sería que cada nodo compute ciertos objetos y se encargue de informar a otros nodos sobre su posición actualizada (y por ejemplo su velocidad para que puedan aplicar mecanismos básicos de predicción).
+
+A pesar de lo anterior, hacer esto evita tener que programar mecanismos de predicción (pues se utilizan las mismas mecánicas del juego) y tener que aplicar \emph{rollbacks} complejos, e.g. si un nodo envía una actualización errada de un objeto del cual es responsable debido a una interacción con otro objeto que posteriormente descubre que no debería haber pasado, debido a una actualización retrasada de ese objeto; esto obligaría a utilizar antimensajes, por otro lado las pulsaciones de teclas son hechos concretos que no pueden revertirse.
+
+%TODO: Estados
+
+%TODO: Eventos
+
+\subsection{Ejecución}
+
+Un evento consistirá entonces en si se pulsó o el soltó una tecla, la tecla y el jugador que pulsó dicha tecla. Un evento tendrá asociada una \emph{frame} de ejecución programada (la cual es diferente a la \emph{frame} en que se pulsó la tecla, debido al \emph{local-lag}).
+
+En términos generales, la ejecución se concretiza por una función determinista:
+\begin{align*}
+    f : S \times \mathbb{P}(E) \rightarrow S
+\end{align*}
+Que recibe un estado actual y un conjunto de eventos (cuyo tiempo de ejecución corresponde al del estado actual) y entrega el estado siguiente. Donde $S$ es el conjunto de posibles estados y $E$ el conjunto de posibles eventos.
+
+
+\subsection{Detalles de los protocolos}
+
+% TODO: Agregar dibujos?
+
+\subsubsection{Protocolo basado en \emph{dead-reckoning}}
+
+En este protocolo el servidor enviará constantemente los estados completos del juego a los clientes, cada vez que llegue un estado del juego a un cliente, llegará en el pasado producto del retraso de la red, así que este deberá avanzarlo con la función hasta alcanzar el estado que se debería mostrar actualmente.
+
+Los clientes enviarán sus eventos al servidor (el cuál también estará corriendo una simulación) y este los ejecutará a penas lleguen, los otros clientes verán los efectos de este evento cuando les lleguen los nuevos estados del servidor, % inevitablemente observando saltos
+el cliente podrá registrar eventos propios en su simulación local intentando ajustar el \emph{local-lag} para que su \emph{frame} de ejecución sea la misma que la en que el evento llege al servidor.
+
+\subsubsection{Time-warp}
+
+Este protocolo está diseñado para arquitecturas \emph{p2p} más que para \emph{cliente-servidor}, cada cliente envía sus eventos a todos los otros clientes, agregando un \emph{local-lag} que estime conveniente, uno muy bajo generará varias inconsistencias, requiriendo muchos \emph{rollbacks} en otros clientes, mientras que uno muy alto hará el juego notoriamente poco responsivo al jugador.
+
+Cada cliente almacena los estados pasados en una \emph{traza} de estados y también los eventos que le llegan, si llega un evento con \emph{frame} de ejecución en el pasado, debe descartar los estados de la \emph{traza} desde ese punto en adelante y recomputarla hasta el estado actual.
+
+\subsubsection{Fast event ordering}
+
+Este protocolo se basa en mantener los clientes con diferentes desfasados entre sí, aplicando un \emph{local-lag} grande a los eventos propios y un ajuste a los eventos que llegan de otros clientes de manera que se ejecuten en el momento correcto considerando el desfase propio (se logre la \emph{perceptive consistency}).
+
+La idea principal es conocer los retrasos entre cada par de clientes y aplicar retrasos suficientemente grandes para que, suponiendo de manera optimista que estos retrasos no aumenten con el tiempo, no sea necesario aplicar \emph{rollbacks}, los retrasos se minimizan a costa de que los nodos queden desfasados entre sí.
+
+El protocolo que se implementará manejará las inconsistencias de la misma manera que \emph{timewarp}.
+
+% Proveé un estado consistente tan rápido como lo permite la red y trabaja bien con estrategias basadas en \emph{dead reackoning}, funcionando con media discreta y continua.
+
+\subsubsection{Trailing State Syncronization}
+
+% TODO: Trailing state syncronization
+
+% Diseñado para los requerimientos de shooter first-person distribuídos.
+% Diseñado para mirrowed architecture (promedio entre centralizado y peer-to-peer), servers conectados por LAN. \cite{cronin2004efficient}
+
+% NOTE: Se menciona bucket syncronization, breathing bucket syncronization y  timewarp syncronization, que fueron creador primero para simulaciones militares.
+
+% Señalar que TSS corre varios estados en diferentes tiempos y se da cuenta cuando se generaron cambios diferentes en el estado siguiente si este se vio forzado a aplicar el evento en un tiempo posterior a su tiempo de ejecución.
+
+% En la página 11 se menciona una ventaja sobre Time Warp!
