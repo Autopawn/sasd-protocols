@@ -1,7 +1,5 @@
 \section{Modelos de consistencia}
 
-% Explicación de los modelos de consistencia en general.
-
 En general, el objetivo de los \emph{mundos virtuales} es crear la ilusión un grupo de usuarios de que están viendo e interactuando con una misma realidad consistente, esto se llama \emph{state melding} y consiste principalmente en mantener la \emph{consistencia} y diseminar las actualizaciones a los procesos participantes \cite{liu2012survey}. La \textbf{consistencia} se entiende cómo la capacidad de encontrar el orden correcto de las operaciones que dependen entre sí, para mostrar un estado similar a todos los clientes.
 
 Entre los métodos que han surgido para resolver esta problemática, es emblemático el de los relojes lógicos de L. Lamport \cite{lamport1978time}. Éste último y sus derivados están enfocados en problemas \textbf{discretos}, garantizando que la secuencia correcta de eventos haya sido propagada entre los participantes resultando en un estado coherente entre ellos.
@@ -10,7 +8,7 @@ Sin embargo, los videojuegos se tratan de problemas \textbf{continuos} en que lo
 
 Otra requerimiento de los videojuegos es la \textbf{responsividad}, que consiste en que el jugador sienta que sus acciones tienen efecto inmediato en el mundo del juego, osea que el tiempo de ejecución de sus eventos sean cercanos al momento en que son emitidos. Ante los retrasos de la red, la consistencia y la responsividad son objetivos encontrados, hacer que los retrasos no afecten a uno implica que tengan que afectar al otro.
 
-Los modelos de consistencia son una formalización de los requisitos de consistencia que puede tener un sistema, \cite{liu2012survey} separa los modelos de consistencia en dos grupos, \emph{dead-line based consistency} y \emph{ultimate consistency}, en los primeros la consistencia respecto a un evento ocurrido en un momento $t$ se logra un un momento $t+\Delta$, mientras que en los segundos toma una cantidad indeterminada de tiempo ya que no necesariamente se fija el mismo tiempo de ejecución (en un reloj universal) en todos los clientes para cada evento, sólo imponiendo ciertas reglas de orden entre estos eventos. Diferentes mundos virtuales tienen diferentes requerimientos de consistencia, he ahí la necesidad de diferentes modelos de consistencia. A continuación se señalan los modelos recopilados por \cite{liu2012survey}.
+Los modelos de consistencia son una formalización de los requisitos de consistencia que puede tener un sistema, \cite{liu2012survey} separa los modelos de consistencia en dos grupos, \emph{dead-line based consistency} y \emph{ultimate consistency}, en los primeros la consistencia respecto a un evento ocurrido en un momento $t$ se logra un un momento $t+\Delta$, mientras que en los segundos toma una cantidad indeterminada de tiempo ya que no necesariamente se fija el mismo tiempo de ejecución (en un reloj universal) en todos los clientes para cada evento, sólo imponiendo ciertas reglas de orden entre estos eventos. Diferentes mundos virtuales tienen diferentes requerimientos de consistencia, he ahí la necesidad de diferentes modelos de consistencia. A continuación se señalan los modelos recopilados por \cite{liu2012survey}, el elemental \emph{strict consistency} y otro llamado \emph{continuous consistency}.
 
 \subsection{Modelos de \emph{ultimate consistency}}
 
@@ -22,6 +20,10 @@ Los modelos de consistencia son una formalización de los requisitos de consiste
 \paragraph{Serializability} Es una extesión de la \emph{sequential consistency} que permite asegurar la ejecución atómica de instrucciones más complejas que lectura y escritura \cite{bernstein1987rrency}.
 
 \subsection{Modelos \emph{dead-line based}}
+
+\subsubsection{Strict consistency}
+
+Implica que en todos los clientes todos los eventos se ejecuten en un mismo tiempo, este tipo de consistencia es el más estricto y, ante la presencia de retrasos en la red, sólo se puede lograr con \emph{local-lag}, retrasando la ejecución de los eventos suficiente para saber que la información ha llegado a todos los clientes.
 
 \subsubsection{Perceptive consistency}
 
@@ -39,28 +41,22 @@ Es una relajación de la \emph{perceptive consistency}, que ejecuta los eventos 
 
 Semejante a los modelos de \emph{ultimate consistency}, aseguran un límite $t+\Delta$ al tiempo de ejecución de un evento, incluyendo la \emph{timed sequential consistency} y la \emph{timed causal consistency} (versiones de la \emph{sequential consistency} y la \emph{causal consistency} que agregan este límite $t+\Delta$) \cite{torres1999timed}.
 
+\subsection{Continuous consistency}
+
+Este modelo presentado en \cite{li2004supporting}, se resume en que la discrepancia de los estados de un objeto compartido por dos nodos $i$ y $j$, llámese $s_i(t)$ y $s_j(t)$, respectivamente, para intervalos de tiempo entre $T_a$ y $T_b$ dados, debe ser menor que una cierta tolerancia $\xi$ constante dada para la aplicación:
+
+\begin{align*}
+    D = \int_{T_a}^{T_b}|s_i(t) - s_j(t)| dt \leq \xi
+\end{align*}
+
+Este modelo de consistencia es una forma \emph{relajada} de la \emph{strict consistency}, que sería cuando $T_b-T_a = 0$ y $\xi = 0$. Buscar este tipo de consistencia da lugar a protocolos que permiten un ajuste gradual entre la posición mostrada de un objeto y la posición estimada en un nodo de referencia. \cite{li2004supporting} muestra el protocolo \emph{continuous synchronization} que con la información obtenida del nodo de referencia, deduce el estado del objeto en el nodo de referencia y ajusta gradualmente el estado local del objeto (ajustando la velocid de los objetos) hasta lograr la sincronización, puede entenderse como un \emph{dead-reckoning}\footnote{Dead-reckoning se basa en recibir los objetos de otro nodo y computar el estado actual que debería tener de acuerdo a la información de avance (posición,velocidad,etc.).} que avanza el objeto más rápido si se sabe que en el nodo de referencia está más avanzado o lo avanza más lento si pasa lo contrario.
+
 \subsection{Requerimientos de consistencia para juegos multijugador online}
 
-Adicionalmente a estos modelos de consistencia, \cite{palant2006consistency} señala posibles \emph{requisitos de consistencia}, más complicados de formalizar, pero esperables en un videojuego.
+Adicionalmente a estos modelos de consistencia, \cite{palant2006consistency} señala posibles requisitos de consistencia centrados en el usuario (a diferencia de los anteriores), más complicados de formalizar, pero esperables en un videojuego.
 
+\paragraph{Physical consistency} El que todos los eventos del mundo virtual visibles por el jugador tienen que cumplir con el modelo físico del mundo (sus reglas).
 
-% Explicar los presentados en los papers vistos.
+\paragraph{State consistency} Cualquier cambio en el estado del juego que sea importante para más de un jugador debe ser señalado a estos con una diferencia de tiempo muy baja o nula. Por ejemplo, los cambios en el marcador de puntaje. Se distinguir entre cambios del mundo y cambios en los ávatares de lo jugadores.
 
-% TODO: Explicar más modelos de consistencia faltantes.
-
-% \subsubsection{Continuous consistency}
-
-% TODO: Releer paper y colocar aquí.
-% NOTE: Colocarlo antes o después de perceptive coonsistency?
-
-
-% Todo esto tiene que ver con \cite{bouillot2005fast}
-
-
-% Time-Sensitive Distributed Multiplayer Games son los que requieren que el usuario interactúe con su propia "réplica" local del juego (responsividad máxima), cada réplica ejecuta las actualizaciones en el mismo órden.
-
-% El tiempo físico entre la ejecución de dos actualizaciones es el mismo para todos los usuarios, (simultaneity si las actualizaciones vienen de 2 fuentes diferetes y \Delta legality si vienen del mismo source.
-
-% Dead Reckoning se basa en recibir los objetos de otro host y computar el estado actual que debería tener de acuerdo a la información de avance (posición,velocidad,etc.),
-
-% Señalar que como los modelos ultimate consistency están bien estudiados, se usan y se aplican técnicas como dead reckoning para manejar las inconsistencias.
+\paragraph{Reaction consistency} Las acciones de un jugador no deben parecer irracionales en las vistas de otros jugadores a menos que sean irracionales en la vista de ese mismo jugador.
