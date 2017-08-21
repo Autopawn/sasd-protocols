@@ -16,6 +16,19 @@
 
 % Eventos "suaves" y eventos "duros", ¿En qué paper leí eso? ¿El de TSS?
 
-% Aunque el trabajo original indica que se puede usar \emph{dead-reckoning} para hacer aparentemente más responsivo la simulación, esto no es posible sin lograr inconsistencias a nivel local, por lo que se requeriría, por ejemplo, algún método de interpolación para \emph{suavizar} la percepción de estas inconsistencias.
+% Aunque el trabajo original indica que se puede usar \emph{dead-reckoning} para hacer aparentemente más responsivo la simulación, esto no es posible sin lograr inconsistencias a nivel local, por lo que se requeriría, por ejemplo, algún método de interpolación para \emph{suavizar} la percepción de estas inconsistencias -> ojo, pero esto rompería el que se cumplan las reglas físicas en ciertos casos de mucha discrepancia. señalar que \cite{li2004supporting} hace esto (aunque no se programó).
 
 % TODO: Agregar y revisitar conclusiones del informe de avance.
+
+% El que la actualización de los estados respecto al tiempo sea determinsta es otra forma de evitar la necesidad de actualizaciones constantes y permitir otros modelos de consistencia, ¿Se convierte en una necesidad? <- Resolver esto.
+% El problema es la lectura constante de la pantalla por parte del usuario final.
+
+% Fenómenos de seguridad que pasan ante un usuario con percepción limitada, cómo se puede aprovechar.
+
+% Importancia de los cambios "importantes", no se trató, el identificarlos, delay de confirmación, muchas otras cosas... (separar cambios importantes de cambios suceptibles a reparación).
+
+% Temas de justicia, ¿Penalizar peores conexiones a la red?
+
+% En los juegos coolaborativos se puede tolerar más las inconsistencias.
+
+% Sistema híbrido no determinista en que haya comunicación p2p y un servidor con estados mandatorios para coordinar cada cierto tiempo.
