@@ -121,12 +121,37 @@ void client_notify(client_t client)
     write(client->sbuffer_npipe[1], "!", 1);
 }
 
+void bv_append_with_sender_id(bvec_t* vec, int32_t sender_id,
+    const char* data, int size)
+{
+    // Read and modify packet size -- it can be made with less mallocs!
+    int16_t packet_size;
+
+    auto_buffer_t size_reader = buffer_from_data(data, 2);
+    buffer_pop_int16(size_reader, &packet_size);
+
+    packet_size += 4; // Include size of id
+
+    auto_buffer_t prepend_writer = buffer_create(2 + 4);
+    buffer_push_int16(prepend_writer, packet_size);
+    buffer_push_int32(prepend_writer, sender_id);
+    // [size | payload] -> [size | sender_id | payload]
+
+    bv_append(vec, buffer_data(prepend_writer), 2 + 4);
+    bv_append(vec, data + 2, size - 2);
+}
+
 void server_client_register(struct server_context* ctx, client_t new_client)
 {
     pthread_mutex_lock(&ctx->mutex);
     for (client_t client = ctx->clients;
          client != NULL;
          client = client->next) {
+
+        // Send connected packet to the new client
+        auto_buffer_t conn_packet = packet_serialize(NULL, CONNECTED);
+        bv_append_with_sender_id(&new_client->sbuffer, client->id,
+            buffer_data(conn_packet), buffer_size(conn_packet));
 
         pthread_mutex_lock(&client->hbuffer_mutex);
         bv_append(&new_client->sbuffer,
@@ -185,21 +210,7 @@ void server_broadcast(struct server_context* ctx,
         if (client->id != sender_id) {
             // Append packet stream to client's sbuffer
             pthread_mutex_lock(&client->sbuffer_mutex);
-            // Read and modify packet size -- it can be made with less mallocs!
-            int16_t packet_size;
-
-            auto_buffer_t size_reader = buffer_from_data(data, 2);
-            buffer_pop_int16(size_reader, &packet_size);
-            packet_size += 4; // Include size of id
-
-            auto_buffer_t prepend_writer = buffer_create(2 + 4);
-            buffer_push_int16(prepend_writer, packet_size);
-            buffer_push_int32(prepend_writer, sender_id);
-            // [size | payload] -> [size | sender_id | payload]
-            bv_append(&client->sbuffer, buffer_data(prepend_writer), 2 + 4);
-            bv_append(&client->sbuffer, data + 2, size - 2);
-
-            // Notify client sbuffer has data
+            bv_append_with_sender_id(&client->sbuffer, sender_id, data, size);
             client_notify(client);
             pthread_mutex_unlock(&client->sbuffer_mutex);
         }
@@ -216,6 +227,13 @@ void* client_task(void* data)
     //
     auto_bvec_t vec = bv_create(1024);
     int16_t packet_size;
+
+    log(INFO, "Client %d connected", client->id);
+    {
+        auto_buffer_t con_packet = packet_serialize(NULL, CONNECTED);
+        server_broadcast(client->ctx, client->id,
+            buffer_data(con_packet), buffer_size(con_packet));
+    }
 
     while (1) {
         fd_set fdset;
@@ -243,6 +261,10 @@ void* client_task(void* data)
             if (rbytes == 0) {
                 // Disconnected
                 log(INFO, "Client %d disconnected", client->id);
+                auto_buffer_t dis_packet = packet_serialize(NULL,
+                    DISCONNECTED);
+                server_broadcast(client->ctx, client->id,
+                    buffer_data(dis_packet), buffer_size(dis_packet));
                 server_client_shutdown(client->ctx, client->id);
                 break;
 
@@ -267,10 +289,8 @@ void* client_task(void* data)
                     // Put a packet_size sized stream in the send queues and
                     // history buffer to ensure integrity!!!
                     pthread_mutex_lock(&client->hbuffer_mutex);
-                    bv_append(&client->hbuffer, buffer_data(prepend_writer),
-                        2 + 4);
-                    bv_append(&client->hbuffer, bv_data(vec) + 2,
-                        packet_size - 2);
+                    bv_append_with_sender_id(&client->hbuffer, client->id,
+                        bv_data(vec), packet_size);
                     pthread_mutex_unlock(&client->hbuffer_mutex);
 
                     server_broadcast(client->ctx,

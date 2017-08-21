@@ -60,17 +60,29 @@ int packet_deserialize(buffer_t data, packet_t* packet, int parse_sender)
     case PLAIN_TEXT:
         TRY(_plain_text_deserialize(data, &packet->payload.plain_text));
         break;
+    case DISCONNECTED:
+        // No payload
+        break;
+    case CONNECTED:
+        // No payload
+        break;
     }
     return 0;
 }
 
+buffer_t _header_serialize(int16_t psize, enum payload_type ptype)
+{
+    // size + type + payload_size
+    buffer_t buffer = buffer_create(2 + 1 + psize);
+    buffer_push_int16(buffer, 2 + 1 + psize);
+    buffer_push_char(buffer, ptype);
+    return buffer;
+}
+
 buffer_t _test_packet_1_serialize(const struct test_packet_1* payload)
 {
-    // size + type + int32 + char
-    int16_t size = 2 + 1 + 4 + 1;
-    buffer_t buffer = buffer_create(size);
-    buffer_push_int16(buffer, size);
-    buffer_push_char(buffer, TEST_PACKET_1);
+    // int32 + char
+    buffer_t buffer = _header_serialize(4 + 1, TEST_PACKET_1);
     buffer_push_int32(buffer, payload->data1);
     buffer_push_char(buffer, payload->data2);
     return buffer;
@@ -78,11 +90,8 @@ buffer_t _test_packet_1_serialize(const struct test_packet_1* payload)
 
 buffer_t _test_packet_2_serialize(const struct test_packet_2* payload)
 {
-    // size + type + int32 + int16
-    int16_t size = 2 + 1 + 4 + 2;
-    buffer_t buffer = buffer_create(size);
-    buffer_push_int16(buffer, size);
-    buffer_push_char(buffer, TEST_PACKET_2);
+    // int32 + int16
+    buffer_t buffer = _header_serialize(4 + 2, TEST_PACKET_2);
     buffer_push_int32(buffer, payload->data1);
     buffer_push_int16(buffer, payload->data2);
     return buffer;
@@ -90,23 +99,31 @@ buffer_t _test_packet_2_serialize(const struct test_packet_2* payload)
 
 buffer_t _handshake_serialize(const struct handshake* payload)
 {
-    // size + type + int32
-    int16_t size = 2 + 1 + 4;
-    buffer_t buffer = buffer_create(size);
-    buffer_push_int16(buffer, size);
-    buffer_push_char(buffer, HANDSHAKE);
+    // int32
+    buffer_t buffer = _header_serialize(4, HANDSHAKE);
     buffer_push_int32(buffer, payload->client_id);
     return buffer;
 }
 
 buffer_t _plain_text_serialize(const struct plain_text* payload)
 {
-    // size + type + string_size + var
-    int16_t size = 2 + 1 + 2 + strlen(payload->text);
-    buffer_t buffer = buffer_create(size);
-    buffer_push_int16(buffer, size);
-    buffer_push_char(buffer, PLAIN_TEXT);
+    // string_size + var
+    buffer_t buffer = _header_serialize(2 + strlen(payload->text), PLAIN_TEXT);
     buffer_push_string(buffer, payload->text);
+    return buffer;
+}
+
+buffer_t _disconnected_serialize()
+{
+    // no payload
+    buffer_t buffer = _header_serialize(0, DISCONNECTED);
+    return buffer;
+}
+
+buffer_t _connected_serialize()
+{
+    // no payload
+    buffer_t buffer = _header_serialize(0, CONNECTED);
     return buffer;
 }
 
@@ -122,6 +139,12 @@ buffer_t packet_serialize(const void* payload,
         return _handshake_serialize(payload);
     case PLAIN_TEXT:
         return _plain_text_serialize(payload);
+    case DISCONNECTED:
+        // Payload ignored
+        return _disconnected_serialize();
+    case CONNECTED:
+        // Payload ignored
+        return _connected_serialize();
     default:
         return NULL;
     }
@@ -164,6 +187,16 @@ void print_packet(const packet_t* packet)
         printf("\tsize = %d\n", packet->size);
         printf("\tsender_id = %d\n", packet->sender_id);
         printf("\ttext = %s\n}\n", packet->payload.plain_text.text);
+        break;
+    case DISCONNECTED:
+        printf("disconnected {\n");
+        printf("\tsize = %d\n", packet->size);
+        printf("\tsender_id = %d\n}\n", packet->sender_id);
+        break;
+    case CONNECTED:
+        printf("connected {\n");
+        printf("\tsize = %d\n", packet->size);
+        printf("\tsender_id = %d\n}\n", packet->sender_id);
         break;
     default:
         printf("UNKNOWN\n");

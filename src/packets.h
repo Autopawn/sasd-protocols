@@ -28,7 +28,9 @@ enum payload_type {
     TEST_PACKET_1 = 'a',
     TEST_PACKET_2 = 'b',
     HANDSHAKE = 'h',
-    PLAIN_TEXT = 't'
+    PLAIN_TEXT = 't',
+    DISCONNECTED = 'd',
+    CONNECTED = 'c'
 };
 
 union payload {

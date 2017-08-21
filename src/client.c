@@ -33,6 +33,7 @@ int main(int argc, char* argv[])
     recvpool_start(&pool, socket);
 
     packet_t packet;
+    // Receive handshake
     while (recvpool_retrieve(&pool, &packet, 0) == -1)
         ;
 
