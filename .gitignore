@@ -35,3 +35,12 @@ hs_err_pid*
 # Mac
 .DS_Store
 tex/.texpadtmp
+
+# Compiled files
+bin
+lib
+out
+build
+
+# Editor specific
+.vscode
