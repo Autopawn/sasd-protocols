@@ -1,25 +1,26 @@
+#include <netutils.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <netutils.h>
 
-#include <sys/socket.h>
 #include <netinet/in.h>
+#include <sys/socket.h>
 #include <unistd.h>
 
 #include "packets.h"
 #include "recvpool.h"
 
+#include <string.h>
 
-void close_socket(int *sockref)
+void close_socket(int* sockref)
 {
     if (sockref != NULL) {
         close(*sockref);
     }
 }
 
-#define close_on_exit __attribute__((cleanup (close_socket)))
+#define close_on_exit __attribute__((cleanup(close_socket)))
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     int socket = connect_tcp("127.0.0.1", 5000);
 
@@ -31,36 +32,57 @@ int main(int argc, char *argv[])
     recvpool_t pool;
     recvpool_start(&pool, socket);
 
+    packet_t packet;
+    while (recvpool_retrieve(&pool, &packet, 0) == -1)
+        ;
+
+    print_packet(&packet);
+
+    while (1) {
+        printf("> ");
+        struct plain_text plain_text;
+        scanf("%s", plain_text.text);
+
+        if (strcmp(plain_text.text, "q!") == 0) {
+            break;
+
+        } else if (strcmp(plain_text.text, "r!") == 0) {
+            while (recvpool_retrieve(&pool, &packet, 1) != -1) {
+                print_packet(&packet);
+            }
+            continue;
+        }
+        send_packet(socket, &plain_text, PLAIN_TEXT);
+    }
+
+    recvpool_join(&pool);
+
+    return 0;
+
+    /*int socket = connect_tcp("127.0.0.1", 5000);
+
+    if (socket == -1) {
+        perror("Cannot connect");
+        exit(1);
+    }
+
+    recvpool_t pool;
+    recvpool_start(&pool, socket);
+
     int count = 0;
-    union packet packet;
+    packet_t packet;
 
     while (count < 3) {
-        enum packet_type ptype = retrieve(&pool, &packet);
-
-        if (ptype == NONE) {
+        if (recvpool_retrieve(&pool, &packet, 0) == -1) {
             continue;
         }
 
-        print_packet(&packet, ptype);
+        print_packet(&packet);
 
         count += 1;
     }
 
-    recvpool_clean(&pool);
+    recvpool_join(&pool);
 
-    /*if (send(socket, "Hi!", 3, 0) == -1) {
-        perror("Cannot send");
-        exit(1);
-    }*
-
-    char buffer[256];
-    int received = recv(socket, buffer, 256, 0);
-    
-    if (received == -1) {
-        perror("Cannot recv");
-        exit(1);
-    }
-
-    buffer[received] = 0;
-    printf("%s\n", buffer);*/
+    return EXIT_SUCCESS;*/
 }
