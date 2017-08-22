@@ -17,10 +17,7 @@ include_directories(${SOURCE}/netutils/src)
 include_directories(${SOURCE})
 
 # Main executable
-add_executable(${PROJ}
-    ${SOURCE}/main.c
-    ${SOURCE}/balls/balls.c
-    ${SOURCE}/balls/draw.c)
+add_executable(${PROJ} ${SOURCE}/main.c)
 
 add_library(recvpool
     ${SOURCE}/recvpool.c
@@ -36,7 +33,10 @@ add_executable(server
     ${SOURCE}/bvec.c)
 add_executable(client ${SOURCE}/client.c)
 
-add_executable(game ${SOURCE}/game.c)
+add_executable(game
+    ${SOURCE}/game.c
+    ${SOURCE}/balls/balls.c
+    ${SOURCE}/balls/draw.c)
 
 target_link_libraries(server netutils recvpool buffer)
 target_link_libraries(client netutils recvpool buffer)
