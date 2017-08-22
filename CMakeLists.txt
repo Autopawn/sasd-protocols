@@ -11,6 +11,9 @@ project(${PROJ})
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
 
+# pthreads
+find_package(Threads)
+
 # Include export configuration
 include(${SOURCE}/netutils/lib/netutils/netutils-targets.cmake)
 include_directories(${SOURCE}/netutils/src)
@@ -38,6 +41,6 @@ add_executable(game
     ${SOURCE}/balls/balls.c
     ${SOURCE}/balls/draw.c)
 
-target_link_libraries(server netutils recvpool buffer)
-target_link_libraries(client netutils recvpool buffer)
+target_link_libraries(server netutils recvpool buffer ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(client netutils recvpool buffer ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(game ${SDL2_LIBRARIES})
