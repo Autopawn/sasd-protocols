@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 
 # Definitions
 set(PROJ sasd-protocols)
-set(SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src) 
+set(SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 # Project name
 project(${PROJ})
@@ -18,7 +18,9 @@ include_directories(${SOURCE})
 
 # Main executable
 add_executable(${PROJ}
-    ${SOURCE}/main.c)
+    ${SOURCE}/main.c
+    ${SOURCE}/balls/balls.c
+    ${SOURCE}/balls/draw.c)
 
 add_library(recvpool
     ${SOURCE}/recvpool.c

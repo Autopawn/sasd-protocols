@@ -9,7 +9,7 @@
 
 #define MAX_PLAYERS 8
 #define N_BALLS 12
-#define ARENA_SIZE 1500
+#define ARENA_SIZE 3000
 
 #define ACCEL 2
 #define MAX_SPEED 64
@@ -31,6 +31,7 @@ typedef struct {
 
 typedef struct {
     int32_t frame;
+    int32_t summon_frame;
     int16_t player;
     char button;
     char pressed;

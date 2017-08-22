@@ -6,6 +6,9 @@
 #define SCREEN_SCALE 1
 #define SCREEN_NAME "sasd-protocols"
 
+#include "balls/balls.h"
+#include "balls/draw.h"
+
 struct {
     int running;
 
@@ -58,6 +61,8 @@ int main(int argc, char* argv[])
 {
     game_init();
 
+    state stat = initial_state(0);
+
     SDL_Event event;
     while (game_state.running) {
         while (SDL_PollEvent(&event)) {
@@ -70,6 +75,7 @@ int main(int argc, char* argv[])
 
         SDL_RenderClear(game_state.screen.renderer);
         SDL_RenderPresent(game_state.screen.renderer);
+        draw_state(&stat);
     }
 
     game_quit();
