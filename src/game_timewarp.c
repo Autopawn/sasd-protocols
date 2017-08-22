@@ -146,10 +146,22 @@ int main(int argc, char* argv[])
     }
 
     int32_t player = packet.payload.handshake.client_id;
-    stat.balls[player].player = player;
-    printf("Connected as %d\n", player);
+	char title[256];
+	sprintf(title, "%s client: %d", game_state.screen.name, player);
+	SDL_SetWindowTitle(game_state.screen.window, title);
 
-    ev_vec_t ev_vec = 0;
+    event connect;
+    connect.frame = frame + local_lag;
+    connect.summon_frame = frame;
+    connect.button = N_BUTTONS;
+    connect.pressed = 1;
+	connect.player = player;
+
+    ev_vec_t ev_vec = ev_vec_create();
+    vec_set(&event_trace, frame + local_lag, &ev_vec);
+    ev_vec_push(&ev_vec, connect);
+
+    send_packet(socket, &connect, EVENT);
 
     SDL_Event sdl_event;
     while (game_state.running) {
@@ -199,13 +211,15 @@ int main(int argc, char* argv[])
 
         // Broadcast events
         for (int i = 0; i < ev_vec->wptr; i++) {
-            send_packet(socket, ev_vec->evs + i, EVENT);
+	        if (ev_vec->evs[i].player == player) {
+		        send_packet(socket, ev_vec->evs + i, EVENT);
+	        }
         }
 
         // Receive events
         while (recvpool_retrieve(&pool, &packet, 1) != -1) {
             if (packet.ptype == EVENT) {
-                printf("event from %d\n", packet.sender_id);
+                //printf("event from %d - %d\n", packet.sender_id, packet.payload.event.player);
                 event remote_ev = packet.payload.event;
 
                 if (vec_get(event_trace, remote_ev.frame, &ev_vec) == -1 || ev_vec == NULL) {
@@ -220,19 +234,12 @@ int main(int argc, char* argv[])
                     min_frame = remote_ev.frame;
                 }
 
-            } else if (packet.ptype == CONNECTED) {
-                printf("%d connected\n", packet.sender_id);
-                vec_get(state_trace, 0, &stat);
-                stat.balls[packet.sender_id].player = packet.sender_id;
-                vec_set(&state_trace, 0, &stat);
-                min_frame = 1;
             }
         }
 
         // Synchronize
         for (int i = min_frame; i <= frame; i++) {
             vec_get(state_trace, i - 1, &stat);
-
             if (vec_get(event_trace, i, &ev_vec) != -1 && ev_vec != 0) {
                 //vec_get(state_trace, i - 1, &stat);
                 stat = advance_state(&stat, ev_vec->evs, ev_vec->wptr);

@@ -345,7 +345,7 @@ void print_packet(const packet_t* packet)
         printf("\tframe = %d\n", packet->payload.event.frame);
         printf("\tsummon_frame = %d\n", packet->payload.event.summon_frame);
         printf("\tplayer = %d\n", packet->payload.event.player);
-        printf("\tbutton = %c\n", packet->payload.event.button);
+        printf("\tbutton = %d\n", (int)packet->payload.event.button);
         printf("\tpressed = %d\n}\n", (int)packet->payload.event.pressed);
         break;
     default:

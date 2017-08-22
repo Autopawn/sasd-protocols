@@ -21,6 +21,7 @@ typedef struct {
     int32_t v_x, v_y;
     int32_t player; // -1 indicates NPC.
     char button_states[N_BUTTONS];
+	int _sent;
 } ball;
 
 typedef struct {
