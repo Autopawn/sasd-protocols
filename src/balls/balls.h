@@ -33,7 +33,7 @@ typedef struct {
     int32_t frame;
     int32_t summon_frame;
     int32_t player;
-    char button;
+    char button; // button=N_BUTTONS means connect/disconnect
     char pressed;
 } event;
 

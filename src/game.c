@@ -63,12 +63,22 @@ int main(int argc, char* argv[])
 
     // Initial state, one ball is from player 0
     state stat = initial_state(0);
-    stat.balls[0].player = 0;
-    stat.balls[1].player = 1;
-    stat.balls[2].player = 2;
 
     event event_buffer[8];
     int n_events = 0;
+
+    // Connection event:
+    event connect;
+    connect.frame = 0;
+    connect.summon_frame = 0;
+    connect.button = N_BUTTONS;
+    connect.pressed = 1;
+
+    for(int i=0;i<3;i++){
+        connect.player = i;
+        event_buffer[n_events] = connect;
+        n_events++;
+    }
 
     SDL_Event event;
     while (game_state.running) {
@@ -109,7 +119,7 @@ int main(int argc, char* argv[])
         stat = advance_state(&stat,event_buffer,n_events);
         n_events = 0;
 
-        SDL_SetRenderDrawColor(game_state.screen.renderer,127,127,127,255);
+        SDL_SetRenderDrawColor(game_state.screen.renderer,127,127,127,127);
         SDL_RenderClear(game_state.screen.renderer);
         draw_state(game_state.screen.renderer, &stat,
             game_state.screen.w, game_state.screen.h);

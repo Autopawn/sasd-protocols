@@ -85,6 +85,13 @@ state advance_state(const state* ini, event* events, int n_events)
     // Create state copy:
     state newst = *ini;
     newst.frame += 1;
+    // Connect players:
+    for (int k = 0; k < n_events; k++) {
+        event ev = events[k];
+        if(ev.button == N_BUTTONS){
+            newst.balls[ev.player].player = ev.pressed? ev.player:-1;
+        }
+    }
     // Update the balls:
     for (int i = 0; i < N_BALLS; i++) {
         ball* ba = &newst.balls[i];
@@ -94,9 +101,10 @@ state advance_state(const state* ini, event* events, int n_events)
             // React to events:
             for (int k = 0; k < n_events; k++) {
                 event ev = events[k];
-                if (ba->player == ev.player
-                    && 0 <= ev.button && ev.button < N_BUTTONS) {
-                    ba->button_states[ev.button] = ev.pressed;
+                if(0 <= ev.button && ev.button < N_BUTTONS){
+                    if(ba->player == ev.player) {
+                        ba->button_states[ev.button] = ev.pressed;
+                    }
                 }
             }
             // Update ball speed, according to buttons.
