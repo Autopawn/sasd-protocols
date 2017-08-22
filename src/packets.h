@@ -1,6 +1,7 @@
 #ifndef PACKETS_H
 #define PACKETS_H
 
+#include "balls/balls.h"
 #include <buffer.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -26,11 +27,14 @@ struct plain_text {
 enum payload_type {
     NONE = '-',
     TEST_PACKET_1 = 'a',
-    TEST_PACKET_2 = 'b',
+    TEST_PACKET_2 = '2',
     HANDSHAKE = 'h',
     PLAIN_TEXT = 't',
     DISCONNECTED = 'd',
-    CONNECTED = 'c'
+    CONNECTED = 'c',
+    BALL = 'b',
+    STATE = 's',
+    EVENT = 'e'
 };
 
 union payload {
@@ -38,6 +42,10 @@ union payload {
     struct test_packet_2 packet2;
     struct handshake handshake;
     struct plain_text plain_text;
+
+    ball ball;
+    state state;
+    event event;
 };
 
 typedef struct {
