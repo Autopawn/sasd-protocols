@@ -7,6 +7,10 @@ set(SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 # Project name
 project(${PROJ})
 
+# SDL
+find_package(SDL2 REQUIRED)
+include_directories(${SDL2_INCLUDE_DIRS})
+
 # Include export configuration
 include(${SOURCE}/netutils/lib/netutils/netutils-targets.cmake)
 include_directories(${SOURCE}/netutils/src)
@@ -30,5 +34,8 @@ add_executable(server
     ${SOURCE}/bvec.c)
 add_executable(client ${SOURCE}/client.c)
 
+add_executable(game ${SOURCE}/game.c)
+
 target_link_libraries(server netutils recvpool buffer)
 target_link_libraries(client netutils recvpool buffer)
+target_link_libraries(game ${SDL2_LIBRARIES})
