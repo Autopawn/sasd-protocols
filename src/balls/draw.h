@@ -6,6 +6,7 @@
 #include "balls.h"
 
 #define BORDER_PIXELS 32
+#define SCORE_MARK_SIZE 10
 
 void draw_state(SDL_Renderer* renderer, const state *stat,
         int width, int height);

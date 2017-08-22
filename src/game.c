@@ -64,6 +64,8 @@ int main(int argc, char* argv[])
     // Initial state, one ball is from player 0
     state stat = initial_state(0);
     stat.balls[0].player = 0;
+    stat.balls[1].player = 1;
+    stat.balls[2].player = 2;
 
     event event_buffer[8];
     int n_events = 0;

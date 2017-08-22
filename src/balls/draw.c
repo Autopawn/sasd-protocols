@@ -34,6 +34,7 @@ void draw_state(SDL_Renderer* renderer, const state *stat,
     SDL_SetRenderDrawColor(renderer,0,0,0,255);
     SDL_RenderDrawRect(renderer,&arena);
 
+    int n_scores = 0;
     // Draw balls.
     for(int i=0;i<N_BALLS;i++){
         int pos_x = offset_x+(stat->balls[i].p_x*space+ARENA_SIZE/2)/ARENA_SIZE;
@@ -49,9 +50,22 @@ void draw_state(SDL_Renderer* renderer, const state *stat,
         // This is a circle in my heart.
         SDL_Rect circle = {pos_x-ball_radious+1, pos_y-ball_radious+1,
             2*ball_radious-1,2*ball_radious-1};
-        SDL_RenderDrawRect(renderer,&circle);
         SDL_Rect smaller_circle = {pos_x-ball_radious+3, pos_y-ball_radious+3,
             2*ball_radious-5,2*ball_radious-5};
+        SDL_RenderDrawRect(renderer,&circle);
         SDL_RenderDrawRect(renderer,&smaller_circle);
+        if(stat->balls[i].player>=0){
+            for(int k=0;k<stat->scores[stat->balls[i].player];k++){
+                SDL_Rect scor = {1+(k+(k/5))*(SCORE_MARK_SIZE-3),
+                    1+SCORE_MARK_SIZE*n_scores,
+                    SCORE_MARK_SIZE-5,SCORE_MARK_SIZE-2};
+                SDL_SetRenderDrawColor(renderer,
+                    colors[color][0],colors[color][1],colors[color][2],255);
+                SDL_RenderFillRect(renderer,&scor);
+                SDL_SetRenderDrawColor(renderer,0,0,0,255);
+                SDL_RenderDrawRect(renderer,&scor);
+            }
+            n_scores++;
+        }
     }
 }

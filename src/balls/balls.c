@@ -155,6 +155,7 @@ state advance_state(const state* ini, event* events, int n_events)
             reset_ball(ba, newst.frame);
             if (ba->player >= 0) {
                 newst.scores[ba->player] -= 1;
+                if(newst.scores[ba->player]<0) newst.scores[ba->player]=0;
             }
         }
     }
@@ -166,9 +167,9 @@ state advance_state(const state* ini, event* events, int n_events)
                 newst.scores[newst.balls[b].player] += 1;
                 reset_ball(&newst.balls[a], newst.frame);
             }
-            if (res == 1) {
+            if (res == +1) {
                 newst.scores[newst.balls[a].player] += 1;
-                reset_ball(&newst.balls[a], newst.frame);
+                reset_ball(&newst.balls[b], newst.frame);
             }
         }
     }
