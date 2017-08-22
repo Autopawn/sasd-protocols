@@ -109,7 +109,6 @@ int main(int argc, char* argv[])
     int trace_size = 512;
 
     auto_vec_t state_trace = vec_create(trace_size, sizeof(state), 0);
-
     auto_vec_t event_trace = vec_create(trace_size, sizeof(uintptr_t), 1);
 
     vec_set(&state_trace, 0, &stat);
@@ -228,9 +227,7 @@ int main(int argc, char* argv[])
                 }
                 ev_vec_push(&ev_vec, remote_ev);
 
-                if (remote_ev.frame > max_frame) {
-                    max_frame = remote_ev.frame;
-                } else if (remote_ev.frame < min_frame) {
+                if (remote_ev.frame < min_frame) {
                     min_frame = remote_ev.frame;
                 }
 
@@ -255,8 +252,8 @@ int main(int argc, char* argv[])
             vec_set(&state_trace, i, &stat);
         }
 
-        SDL_SetRenderDrawColor(game_state.screen.renderer, 127, 127, 127, 255);
-        SDL_RenderClear(game_state.screen.renderer);
+        //SDL_SetRenderDrawColor(game_state.screen.renderer, 127, 127, 127, 255);
+        //SDL_RenderClear(game_state.screen.renderer);
         draw_state(game_state.screen.renderer, &stat,
                    game_state.screen.w, game_state.screen.h);
         SDL_RenderPresent(game_state.screen.renderer);
