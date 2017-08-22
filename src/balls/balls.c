@@ -115,8 +115,7 @@ state advance_state(const state* ini, event* events, int n_events)
             // React to events:
             for (int k = 0; k < n_events; k++) {
                 event ev = events[k];
-                if (ev.frame == newst.frame
-                    && ba->player == ev.player
+                if (ba->player == ev.player
                     && 0 <= ev.button && ev.button < N_BUTTONS) {
                     ba->button_states[ev.button] = ev.pressed;
                 }

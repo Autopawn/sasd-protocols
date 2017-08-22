@@ -32,7 +32,7 @@ typedef struct {
 typedef struct {
     int32_t frame;
     int32_t summon_frame;
-    int16_t player;
+    int32_t player;
     char button;
     char pressed;
 } event;
