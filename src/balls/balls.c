@@ -55,33 +55,12 @@ int collide_balls(ball* ball_a, ball* ball_b)
                 return -1;
         } else {
             // ^ Bounce.
-            // TODO: Enhance this bouncing to prevent that the speed vector ends pointing to the opposite ball, stucking them.
-            // Check the angle of collision and bounce:
-            int64_t delta_dif = ABS(delta_x) - ABS(delta_y);
-            if (ABS(delta_dif) < BALL_RADIOUS / 3) {
-                // Diagonal bouncing:
-                int32_t spd_sis_a = ball_a->v_x + ball_a->v_y;
-                int32_t spd_tra_a = ball_a->v_x - ball_a->v_y;
-                int32_t spd_sis_b = ball_b->v_x + ball_b->v_y;
-                int32_t spd_tra_b = ball_b->v_x - ball_b->v_y;
-                if (SIGN(delta_x) == SIGN(delta_y)) {
-                    int32_t aux = spd_sis_a;
-                    spd_sis_a = spd_sis_b;
-                    spd_sis_b = aux;
-                } else {
-                    int32_t aux = spd_tra_a;
-                    spd_tra_a = spd_tra_b;
-                    spd_tra_b = aux;
-                }
-                ball_a->v_x = (spd_sis_a + spd_tra_a) / 2;
-                ball_a->v_y = (spd_sis_a - spd_tra_a) / 2;
-                ball_b->v_x = (spd_sis_b + spd_tra_b) / 2;
-                ball_b->v_y = (spd_sis_b - spd_tra_b) / 2;
-            } else if (delta_dif > 0) {
+            if(delta_x*(ball_a->v_x-ball_b->v_x)>=0){
                 int32_t aux = ball_a->v_x;
                 ball_a->v_x = ball_b->v_x;
                 ball_b->v_x = aux;
-            } else if (delta_dif < 0) {
+            }
+            if(delta_y*(ball_a->v_y-ball_b->v_y)>=0){
                 int32_t aux = ball_a->v_y;
                 ball_a->v_y = ball_b->v_y;
                 ball_b->v_y = aux;
