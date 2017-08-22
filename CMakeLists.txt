@@ -51,4 +51,4 @@ add_executable(game
 target_link_libraries(server netutils recvpool buffer ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(client netutils recvpool buffer ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(game ${SDL2_LIBRARIES})
-target_link_libraries(game_timewarp ${SDL2_LIBRARIES})
+target_link_libraries(game_timewarp ${SDL2_LIBRARIES} netutils recvpool buffer)

@@ -6,10 +6,11 @@
 typedef struct {
     size_t size;
     size_t elem_size;
+	int zero_fill;
     char data[];
 } * vec_t;
 
-vec_t vec_create(size_t n, size_t elemsize);
+vec_t vec_create(size_t n, size_t elemsize, int zero_fill);
 void vec_destroy(vec_t vec);
 
 void vec_set(vec_t* vec_ref, size_t i, const void* elem);

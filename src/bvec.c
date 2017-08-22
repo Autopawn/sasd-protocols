@@ -7,6 +7,7 @@ bvec_t bv_create(size_t size)
 {
     bvec_t vec = malloc(sizeof(*vec) + size);
     vec->size = size;
+    vec->wptr = 0;
     return vec;
 }
 

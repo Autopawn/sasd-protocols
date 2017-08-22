@@ -288,7 +288,7 @@ void* client_task(void* data)
                 if (bv_size(vec) >= packet_size) {
                     // Put a packet_size sized stream in the send queues and
                     // history buffer to ensure integrity!!!
-                    pthread_mutex_lock(&client->hbuffer_mutex);
+                pthread_mutex_lock(&client->hbuffer_mutex);
                     bv_append_with_sender_id(&client->hbuffer, client->id,
                         bv_data(vec), packet_size);
                     pthread_mutex_unlock(&client->hbuffer_mutex);
@@ -297,7 +297,8 @@ void* client_task(void* data)
                         client->id, bv_data(vec), packet_size);
 
                     // Move remaining data into accumulator
-                    memmove(vec, vec + packet_size, bv_size(vec) - packet_size);
+                    memmove(bv_data(vec), bv_data(vec) + packet_size,
+                            bv_size(vec) - packet_size);
                     bv_size(vec) = bv_size(vec) - packet_size;
                 }
             }
