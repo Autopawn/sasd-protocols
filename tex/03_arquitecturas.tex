@@ -29,7 +29,11 @@ Croquet reduce el tráfico de la red usando una vista orientada a los objetos, c
 
 \emph{Croquet} dejó de desarrollarse para dar paso a \emph{Open Cobalt}, una plataforma para construír y compartir portales 3D virtuales sin la necesidad de servidores centralizados. Ambos proyectos usan una versión modificada de un protocolo basado en \emph{peers} llamado \emph{TeaTime}.
 
+Vale la pena señalar la arquitectura \emph{distributed scene graph} de \emph{OpenSimulator}, que es semejante a esta, pero tiene un \emph{server} central que mantiene una copia autoritaria que se manda con baja frecuencia, ya que es trabajo de los clientes difundir los eventos, asignarles un tiempo de ejecución correcto y ordenarlos.
+
 \subsubsection{Mirrored game architecture}
+
+Es una arquitectura híbrida entre \emph{simulator-centric} y \emph{peer-to-peer}, donde hay múltiples servidores \emph{mirrors}. Estos se comunican como \emph{peers} por medio de una red \emph{multicast} de baja latencia. Inicialmente cada \emph{mirror} contiene una copia completa del juego y envía eventos a los otros, puesto cualquier cliente puede conectarse a cualquier \emph{mirror} no hay una forma obvia en que distribuír los datos o el procesamiento.
 
 % Comentado por Cronin, Kurc, Filstrup y Jamin (for mirrored game architectures).
 

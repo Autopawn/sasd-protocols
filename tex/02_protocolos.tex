@@ -62,16 +62,14 @@ El protocolo que se implementará manejará las inconsistencias de la misma mane
 
 \subsubsection{Protocolo con Trailing State Syncronization}
 
-% TODO: Trailing state syncronization
+Diseñado para los requerimientos de shooter first-person distribuídos. Mantiene en memoria estados correspondientes a ciertas cantidades de frames en el pasado (ordenados según esta cantidad de frames) llamados \emph{trailing states}, estos se avanzan junto con el estado que se está mostrando al jugador, de manera que su retraso con la frame actual se mantiene constante. A diferencia de \emph{timewarp}, se guardan menos estados.
 
-% Diseñado para los requerimientos de shooter first-person distribuídos.
-% Diseñado para mirrowed architecture (promedio entre centralizado y peer-to-peer), servers conectados por LAN. \cite{cronin2004efficient}
+Cuando se detecta una inconsistencia, se toma el \emph{trailing state} de la frame más nueva que no la tiene y se hace avanzar hasta obtener la frame actual, dejando copias que reemplazan los \emph{trailing states} correspondientes a las frames más actuales a la inconsistencia. Se requiere que el útimo \emph{trailing state} siempre sea más antiguo que cualquier inconsistencia.
+
+Aunque la versión que se programará trata eventos pasados como inconsistencias, cave mencionar que TSS en su forma original detecta las inconsistencias cuando los cambios producidos por un evento son diferentes a los cambios producidos por el mismo evento ejecutado en los \emph{trailing states} adelantados. Esta comparación, que se realiza cuando el \emph{trailing state} anterior alcanza la \emph{frame} del evento, evita tener que hacer \emph{rollback} cuando los eventos no generaron cambios significativos, además el ``esperar'' hasta llegar a dicha \emph{frame} permite que varias inconsistencias se manejen en un mismo \emph{rollback} disminuyendo el procesamiento requerido.
+
+% \subsubsection{Otros protocolos y métodos}
 
 % NOTE: Se menciona bucket syncronization, breathing bucket syncronization y  time-warp syncronization, que fueron creador primero para simulaciones militares.
 
-% Señalar que TSS corre varios estados en diferentes tiempos y se da cuenta cuando se generaron cambios diferentes en el estado siguiente si este se vio forzado a aplicar el evento en un tiempo posterior a su tiempo de ejecución.
-
-% En la página 11 se menciona una ventaja sobre Time Warp!
-
-% \subsubsection{Otros protocolos y métodos}
 % Continuous synchronization, Bucket synchronization, Predictive Time management.
