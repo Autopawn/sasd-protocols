@@ -50,7 +50,7 @@ La corrección de inconsistencias no es inmediata como en \emph{timewarp}, se es
 &
 Tiene los mismos problemas que \emph{time-warp}.
 &
-Que se espere hasta detectar la inconsistencia permite resolver varias inconsistencias al mismo tiempo, ahorrando procesamiento, al mismo tiempo, se requiere mucho menos memoria para guardar los estados anteriores, aunque se debe avanzar todos los \emph{trailing states} cada \emph{frame}.
+Que se espere hasta detectar la inconsistencia permite resolver varias inconsistencias al mismo tiempo (aunque afecta un poco la responsividad), ahorrando procesamiento, al mismo tiempo, se requiere mucho menos memoria para guardar los estados anteriores, aunque se debe avanzar todos los \emph{trailing states} cada \emph{frame}, lo que puede ser desventajoso si esto es mucho más costoso que copiar un estado.
 \\ \hline
 \end{longtable}
 \normalsize
