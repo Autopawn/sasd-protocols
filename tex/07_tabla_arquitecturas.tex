@@ -26,8 +26,8 @@ Enviar eventos en vez de objetos evita congestionar la red. \newline
 Si las \emph{islas} de objetos se pueden organizar de manera efectiva, no debería ser significativa la carga de los clientes por replicar el estado, de otra manera y a gran escala tanto este beneficio como los anteriores pueden verse afectados. \newline El sólo envío de eventos requiere mecanismos de \emph{rollback} que hacen un poco más pesada la carga en el cliente. \\
 \hline
 Mirrored game architectures &
-consistencia y responsividad &
-escalabilidad \\
+Desde el punto de vista del cliente el \emph{retraso} debería ser igual que en un \emph{simulator-centric}, sin embargo, si se tienen dos clientes conectados a \emph{mirrors} diferentes, verán un retraso mayor entre ellos (dado que los \emph{mirrors} deben coordinarse), por lo que tiene más sentido utilizarlo para juegos coolaborativos.  &
+Sin una técnica que distribuya los estados entre los \emph{mirrors}, cada \emph{mirror} tiene que tener una copia completa del estado y realizar todo el procesamiento, por lo que parece ser una mejor opción que \emph{simulator-centric} sólo cuando el cuello de botella está en la cantidad de jugadores que pueden conectarse o, más generalmente, en la capacidad de la red.\\
 \hline
 \end{longtable}
 \normalsize
