@@ -5,7 +5,7 @@ En la medida que se intenta mantener una realidad compartida entre cada vez más
 
 \subsection{Detalles de las arquitecturas}
 
-\subsubsection{Simulator-Centric}
+\subsubsection{Simulator-centric}
 
 Utilizado por \emph{Second-Life} y \emph{Eve Online} (un juego de temática espacial), en esta arquitectura un servidor tiene autoridad sobre un área del mundo central que impone un órden sobre los eventos y mantiene una copia autoritaria de la simulación. Esta solución centralizada obliga a la separación del mundo virtual en regiones espaciales, en el caso de \emph{Second-Life} se trata de regiones cuadradas, cada una es manejada por sólo un proceso simulador, el que se encarga de diseminar las actualizaciones y aplicar todas las operaciones a los objetos; mientras que en el caso de \emph{Eve Online} cada sistema solar está controlado por un proceso en un servidor, llamado servidor \emph{SOL}.
 
