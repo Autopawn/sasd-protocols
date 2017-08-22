@@ -7,6 +7,7 @@
 
 #define BORDER_PIXELS 32
 
-void draw_state(SDL_Renderer* renderer, const state *stat);
+void draw_state(SDL_Renderer* renderer, const state *stat,
+        int width, int height);
 
 #endif

@@ -10,8 +10,8 @@ state initial_state(int32_t frame)
     while (legion_size * legion_size < N_BALLS)
         legion_size++;
     for (int i = 0; i < N_BALLS; i++) {
-        st.balls[i].p_x = (1 + 2 * (i % legion_size)) * ARENA_SIZE / (legion_size + 1);
-        st.balls[i].p_y = (1 + 2 * (i / legion_size)) * ARENA_SIZE / (legion_size + 1);
+        st.balls[i].p_x = (1 + 2 * (i % legion_size)) * ARENA_SIZE / (2*legion_size);
+        st.balls[i].p_y = (1 + 2 * (i / legion_size)) * ARENA_SIZE / (2*legion_size);
         st.balls[i].v_x = 0;
         st.balls[i].v_y = 0;
         st.balls[i].player = -1;

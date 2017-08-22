@@ -61,7 +61,9 @@ int main(int argc, char* argv[])
 {
     game_init();
 
+    // Initial state, one ball is from player 0
     state stat = initial_state(0);
+    stat.balls[0].player = 0;
 
     SDL_Event event;
     while (game_state.running) {
@@ -73,8 +75,10 @@ int main(int argc, char* argv[])
             }
         }
 
+        SDL_SetRenderDrawColor(game_state.screen.renderer,127,127,127,255);
         SDL_RenderClear(game_state.screen.renderer);
-        draw_state(game_state.screen.renderer, &stat);
+        draw_state(game_state.screen.renderer, &stat,
+            game_state.screen.w, game_state.screen.h);
         SDL_RenderPresent(game_state.screen.renderer);
     }
 

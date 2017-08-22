@@ -14,25 +14,24 @@ static const int colors[][3] = {
 };
 static const int n_colors = 10;
 
-void draw_state(SDL_Renderer* renderer, const state *stat){
-    int weight,height;
-    SDL_RenderGetLogicalSize(renderer,&weight,&height);
-
-    int space_w = weight-2*BORDER_PIXELS;
-    int space_h = height-2*BORDER_PIXELS;
+void draw_state(SDL_Renderer* renderer, const state *stat,
+        int width, int height){
     int space, offset_x, offset_y;
-    if(space_w>=space_h){
-        space = space_h;
-        offset_x = (weight-space)/2;
+    if(width>=height){
+        space = height-2*BORDER_PIXELS;
+        offset_x = (width-space)/2;
         offset_y = BORDER_PIXELS;
     }else{
-        space = space_w;
+        space = width-2*BORDER_PIXELS;
         offset_x = BORDER_PIXELS;
         offset_y = (height-space)/2;
     }
     int ball_radious = BALL_RADIOUS*space/ARENA_SIZE;
     //
     SDL_Rect arena = {offset_x, offset_y, space, space};
+    SDL_SetRenderDrawColor(renderer,143,143,143,255);
+    SDL_RenderFillRect(renderer,&arena);
+    SDL_SetRenderDrawColor(renderer,0,0,0,255);
     SDL_RenderDrawRect(renderer,&arena);
 
     // Draw balls.
@@ -51,5 +50,8 @@ void draw_state(SDL_Renderer* renderer, const state *stat){
         SDL_Rect circle = {pos_x-ball_radious+1, pos_y-ball_radious+1,
             2*ball_radious-1,2*ball_radious-1};
         SDL_RenderDrawRect(renderer,&circle);
+        SDL_Rect smaller_circle = {pos_x-ball_radious+3, pos_y-ball_radious+3,
+            2*ball_radious-5,2*ball_radious-5};
+        SDL_RenderDrawRect(renderer,&smaller_circle);
     }
 }

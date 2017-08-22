@@ -13,7 +13,7 @@
 
 #define ACCEL 2
 #define MAX_SPEED 64
-#define BALL_RADIOUS 32
+#define BALL_RADIOUS 56
 #define N_BUTTONS 4
 
 typedef struct {
