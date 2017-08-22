@@ -6,6 +6,8 @@
 
 %TODO: Señalar el intento que se hizo de hacer protocolos en que los métodos que no son completamente protocolos sean representativos.
 
+% Señalar algo del protocolo continuous synchronization ?
+
 A continuación se describen los protocolos implementados, cada uno diseñado para ser representativo de una técnica particular para lograr simulaciones distribuídas.
 
 Para todos los protocolos que se revisarán en este trabajo se llegó a la conclusión de que la forma más simple de trabajar es manteniendo simulaciones locales completas del estado del juego (replicas) que son afectadas por eventos de teclado de los clientes, específicamente pulsar y soltar teclas.
@@ -42,6 +44,8 @@ el cliente podrá registrar eventos propios en su simulación local intentando a
 
 \subsubsection{Protocolo con Time-warp}
 
+% TODO: señalar lo que se pueda sacar del paper A Testbed for P2P gamming using Time-warp.
+
 Este protocolo está diseñado para arquitecturas \emph{p2p} más que para \emph{cliente-servidor}, e inicialmente fue presentado como una alternativa a los otros protocolos basados en \emph{Network Paradigm} para sistemas distribuídos y no replicados sino distribupidos, cada cliente envía sus eventos a todos los otros clientes, agregando un \emph{local-lag} que estime conveniente, uno muy bajo generará varias inconsistencias, requiriendo muchos \emph{rollbacks} en otros clientes, mientras que uno muy alto hará el juego notoriamente poco responsivo al jugador.
 
 Cada cliente almacena los estados pasados en una \emph{traza} de estados y también los eventos que le llegan, si llega un evento con \emph{frame} de ejecución en el pasado, debe descartar los estados de la \emph{traza} desde ese punto en adelante y recomputarla hasta el estado actual.
@@ -68,3 +72,6 @@ El protocolo que se implementará manejará las inconsistencias de la misma mane
 % Señalar que TSS corre varios estados en diferentes tiempos y se da cuenta cuando se generaron cambios diferentes en el estado siguiente si este se vio forzado a aplicar el evento en un tiempo posterior a su tiempo de ejecución.
 
 % En la página 11 se menciona una ventaja sobre Time Warp!
+
+% \subsubsection{Otros protocolos y métodos}
+% Continuous synchronization, Bucket synchronization, Predictive Time management.

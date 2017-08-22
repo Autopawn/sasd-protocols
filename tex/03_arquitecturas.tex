@@ -1,17 +1,29 @@
 \section{Arquitecturas}
 
-En la medida que se intenta mantener una realidad compartida entre cada vez más clientes, la segunda parte del \emph{state melding}, la diseminación de las actualizaciones se hace cada vez más importante debido a las limitaciones en la capacidad de procesamiento y la red. A continuación se nombran algunos modelos de arquitecturas que enfrentan este problema de escalabilidad.
+En la medida que se intenta mantener una realidad compartida entre cada vez más clientes, la segunda parte del \emph{state melding}, la diseminación de las actualizaciones se hace cada vez más importante debido a las limitaciones en la capacidad de procesamiento y la red. A continuación se nombran algunos modelos de arquitecturas que enfrentan este problema de escalabilidad. Todo son mencionados en \cite{liu2012survey}, salvo \emph{mirrored game architecture} que se menciona en \cite{cronin2004efficient}.
+% TODO: Hay más referencias donde se desarrolla más mirrored game architecture, buscarlas.
 
 \subsection{Detalles de las arquitecturas}
 
-\subsubsection{Simulator-Centric}
+\subsubsection{Simulator-centric}
 
-Utilizado por \emph{Second-Life} y \emph{Eve Online}, en que un servidor tiene autoridad sobre un área del mundo central.
+Utilizado por \emph{Second-Life} y \emph{Eve Online} (un juego de temática espacial), en esta arquitectura un servidor tiene autoridad sobre un área del mundo central que impone un órden sobre los eventos y mantiene una copia autoritaria de la simulación. Esta solución centralizada obliga a la separación del mundo virtual en regiones espaciales, en el caso de \emph{Second-Life} se trata de regiones cuadradas, cada una es manejada por sólo un proceso simulador, el que se encarga de diseminar las actualizaciones y aplicar todas las operaciones a los objetos; mientras que en el caso de \emph{Eve Online} cada sistema solar está controlado por un proceso en un servidor, llamado servidor \emph{SOL}.
+
+En \emph{Second-Life} hay \emph{sequential consistency} (por definición, ya que no hay estados compartidos), adicionalmente, cuando los clientes tienen autorización para modificar un objeto, este objeto se \emph{congela} en el simulador, evitando dobles escrituras. Los mensajes se ejecutan al momento que los recibe el servidor \footnote{Este enfoque es muy parecido al protocolo basado en dead-reckoning implementado.}. El simulador sólo envía a los clientes los objetos de su área de visión y estos aplican \emph{dead-reckoning}. En \emph{Eve Online} las actualizaciones mandan las condiciones iniciales del estado para un periodo de tiempo, pudiendo los clientes revertir cambios para ajustarse a esas condiciones y detectar cómo eso altera el estado actual.
+
+\emph{Eve Online} tiene algunas características adicionales, en primer lugar los clientes no se conectan directamente a los servidores SOL, sino que se conectan a un servidor \emph{proxy}, el que a su vez se conceta através de una VPN con un SOL, esto disminuye la carga de los servidores SOL. Adicionalmente, utiliza burbujas de consecuencialidad, preocupándose sólo de hacer secuenciales las acciones de grupos de jugadores que estén suficientemente cerca como para interactuar, cada cliente aplica \emph{dead-reckoning} con los objetos que se encuentran en la misma burbuja de consecuencialidad.
 
 \subsubsection{Darkstar}
 
+% Serializability entre los servidores del juego.
+
 \subsubsection{Peer-to-peer}
+
+% Croquet reduce el tráfico de la red usando una vista orientada a los objetos, cada participante simula el comportamiento de los objetos que \emph{hostea}, las variables internas del objeto están encapsuladas y funciónan en base a comportamientos activados por eventos, que pueden recibir de otros objetos
 
 \subsubsection{Mirrored game architecture}
 
 % Comentado por Cronin, Kurc, Filstrup y Jamin (for mirrored game architectures).
+
+% Meta arquitecturas
+% - interest management, se envian actualizaciones relevantes a cada cliente, menos relevantes (e.g. objetos más lejanos) se envían con menos frecuencia. Puede ser spatial based o class based.

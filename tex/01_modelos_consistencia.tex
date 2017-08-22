@@ -23,7 +23,7 @@ Los modelos de consistencia son una formalización de los requisitos de consiste
 
 \subsubsection{Strict consistency}
 
-Implica que en todos los clientes todos los eventos se ejecuten en un mismo tiempo, este tipo de consistencia es el más estricto y, ante la presencia de retrasos en la red, sólo se puede lograr con \emph{local-lag}, retrasando la ejecución de los eventos suficiente para saber que la información ha llegado a todos los clientes.
+Implica que en todos los clientes todos los eventos se ejecuten en un mismo tiempo, este tipo de consistencia es el más estricto y, ante la presencia de retrasos en la red, sólo se puede lograr con \emph{local-lag} \footnote{El \emph{local-lag} consiste en agregar un retraso entre el momento de ejecución y el momento en que se generó cada evento.}, retrasando la ejecución de los eventos lo suficiente para asegurar que la información ha llegado a todos los clientes.
 
 \subsubsection{Perceptive consistency}
 
