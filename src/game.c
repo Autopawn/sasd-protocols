@@ -119,8 +119,6 @@ int main(int argc, char* argv[])
         stat = advance_state(&stat,event_buffer,n_events);
         n_events = 0;
 
-        SDL_SetRenderDrawColor(game_state.screen.renderer,127,127,127,127);
-        SDL_RenderClear(game_state.screen.renderer);
         draw_state(game_state.screen.renderer, &stat,
             game_state.screen.w, game_state.screen.h);
         SDL_RenderPresent(game_state.screen.renderer);
