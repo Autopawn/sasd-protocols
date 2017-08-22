@@ -120,7 +120,7 @@ int main(int argc, char* argv[])
         n_events = 0;
 
         draw_state(game_state.screen.renderer, &stat,
-            game_state.screen.w, game_state.screen.h);
+            game_state.screen.w, game_state.screen.h,64);
         SDL_RenderPresent(game_state.screen.renderer);
 
         // Not good approach for now, use a clock.

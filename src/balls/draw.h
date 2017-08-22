@@ -9,6 +9,6 @@
 #define SCORE_MARK_SIZE 10
 
 void draw_state(SDL_Renderer* renderer, const state *stat,
-        int width, int height);
+        int width, int height, unsigned char alpha);
 
 #endif

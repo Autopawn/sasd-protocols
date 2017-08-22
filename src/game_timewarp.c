@@ -258,7 +258,7 @@ int main(int argc, char* argv[])
         SDL_SetRenderDrawColor(game_state.screen.renderer, 127, 127, 127, 255);
         SDL_RenderClear(game_state.screen.renderer);
         draw_state(game_state.screen.renderer, &stat,
-                   game_state.screen.w, game_state.screen.h);
+                   game_state.screen.w, game_state.screen.h,64);
         SDL_RenderPresent(game_state.screen.renderer);
 
         // Not good approach for now, use a clock.
