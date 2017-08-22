@@ -36,6 +36,13 @@ add_executable(server
     ${SOURCE}/bvec.c)
 add_executable(client ${SOURCE}/client.c)
 
+add_executable(game_timewarp
+    ${SOURCE}/game_timewarp.c
+    ${SOURCE}/balls/balls.c
+    ${SOURCE}/balls/draw.c
+    ${SOURCE}/vec.c)
+
+
 add_executable(game
     ${SOURCE}/game.c
     ${SOURCE}/balls/balls.c
@@ -44,3 +51,4 @@ add_executable(game
 target_link_libraries(server netutils recvpool buffer ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(client netutils recvpool buffer ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(game ${SDL2_LIBRARIES})
+target_link_libraries(game_timewarp ${SDL2_LIBRARIES})
