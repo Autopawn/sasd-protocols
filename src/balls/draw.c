@@ -29,9 +29,12 @@ void draw_state(SDL_Renderer* renderer, const state *stat,
     int ball_radious = BALL_RADIOUS*space/ARENA_SIZE;
     //
     SDL_Rect arena = {offset_x, offset_y, space, space};
-    SDL_SetRenderDrawColor(renderer,143,143,143,255);
+    SDL_SetRenderDrawBlendMode(renderer,SDL_BLENDMODE_BLEND);
+    SDL_SetRenderDrawColor(renderer,127,127,127,32);
+    SDL_RenderFillRect(renderer,NULL);
+    SDL_SetRenderDrawColor(renderer,143,143,143,32);
     SDL_RenderFillRect(renderer,&arena);
-    SDL_SetRenderDrawColor(renderer,0,0,0,255);
+    SDL_SetRenderDrawColor(renderer,0,0,0,32);
     SDL_RenderDrawRect(renderer,&arena);
 
     int n_scores = 0;
