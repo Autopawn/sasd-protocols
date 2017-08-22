@@ -26,7 +26,7 @@ int compare_events(const void* a, const void* b)
     const event* aa = (const event*)a;
     const event* bb = (const event*)b;
     int rel;
-    rel = aa->frame - bb->frame;
+    rel = bb->pressed - aa->pressed;
     if (rel != 0)
         return rel;
     rel = aa->player - bb->player;
@@ -35,7 +35,7 @@ int compare_events(const void* a, const void* b)
     rel = aa->button - bb->button;
     if (rel != 0)
         return rel;
-    return (aa->pressed - bb->pressed);
+    return (aa->frame - bb->frame);
 }
 
 int collide_balls(ball* ball_a, ball* ball_b)

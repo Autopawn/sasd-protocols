@@ -81,6 +81,7 @@ int main(int argc, char* argv[])
                 event_buffer[n_events].summon_frame = 9001;
                 event_buffer[n_events].player = 0;
                 event_buffer[n_events].pressed = (event.type == SDL_KEYDOWN);
+                int good = 1;
                 switch(event.key.keysym.sym){
                     case SDLK_RIGHT:
                         event_buffer[n_events].button = 0;
@@ -94,8 +95,11 @@ int main(int argc, char* argv[])
                     case SDLK_DOWN:
                         event_buffer[n_events].button = 3;
                     break;
+                    default:
+                        good = 0;
+                    break;
                 }
-                n_events++;
+                if(good) n_events++;
                 break;
             }
         }
