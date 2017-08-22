@@ -14,17 +14,19 @@
 Simulator-Centric &
 consistencia y responsividad &
 seguridad &
-escalabilidad \\
+El servidor se transforma en un cuello de botella, tanto por la capacidad de procesamiento como de la red, aun cuando esto se puede mejorar usando \emph{proxies}. Generalmente se tiene que optar por construír con partes aisladas y limitar la cantidad de jugadores a dichas partes. \\
 \hline
-Darkstar &
+Datos separados de computación (Darkstar) &
 consistencia y responsividad &
 seguridad &
 escalabilidad \\
 \hline
-Peer-to-peer con router (Croquet) &
+Peer-to-peer con \emph{router} (Croquet) &
 consistencia y responsividad &
-seguridad &
-escalabilidad \\
+El \emph{router} asegura tiempos de ejecución correctos para los eventos de los clientes. &
+El \emph{router} no necesita mantener una copia de la simulación lo que requiere menos procesamiento. \newline
+Enviar eventos en vez de objetos evita congestionar la red. \newline
+Si las \emph{islas} de objetos se pueden organizar de manera efectiva, no debería ser significativa la carga de los clientes por replicar el estado, de otra manera y a gran escala tanto este beneficio como los anteriores pueden verse afectados. \\
 \hline
 Mirrored game architectures &
 consistencia y responsividad &

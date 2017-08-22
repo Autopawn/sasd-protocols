@@ -15,11 +15,19 @@ En \emph{Second-Life} hay \emph{sequential consistency} (por definición, ya que
 
 \subsubsection{Darkstar}
 
-% Serializability entre los servidores del juego.
+\emph{Darkstar} un intento por crear una infraestructura para mundos virtuales del lado del servidor orientada a diferentes tipos de juego. Busca evita el cuello de botella de las arquitecturas \emph{simulator-centric} separando la data de su procesamiento, de manera que este último se pueda realizar en \emph{hardware} designado dínamicamente. El estado del juego entonces se mantiene en servidores de bases de datos que son modificados por tareas que corren en \emph{game servers} que son activadas por eventos de los clientes.
 
-\subsubsection{Peer-to-peer}
+Al igual que un \emph{simulator-centric} cada \emph{game server} se encarga de mantener la \emph{serializability} imponiendo un órden a los eventos de los clientes, y manteniendo una copia autoritaria (para los clientes conectados) del estado, esta copia al mismo tiempo es un \emph{cache} de lo almacenado en la base de datos. Las modificaciones en \emph{cache} se realizan desde los \emph{game servers} mediante transacciones siendo este otro nive de serialización. Una meta de diseño de este proyecto era que los clientes interesados en cierta data se conectaran a \emph{game servers} que ya la estuvieran manejando, para balancear mejor la carga.
 
-% Croquet reduce el tráfico de la red usando una vista orientada a los objetos, cada participante simula el comportamiento de los objetos que \emph{hostea}, las variables internas del objeto están encapsuladas y funciónan en base a comportamientos activados por eventos, que pueden recibir de otros objetos
+Para que este esquema sea efectivo se requiere de una base de datos distribuída de alto-rendimiento que soporte transacciones \emph{ACID}, este proyecto usa \emph{Berkeley DB}. Aun así, este proyecto fue descontinuado, y aunque se hizo un fork de la comunidad, llamado \emph{RedDrawf}, no se encontraron evidencias de actividad más recientes que del 2013, lo que puede deberse a un bajo desempeño en la práctica, pues autores como \cite{fujita2006new} señalan que la disponibilidad global de un objeto y su acceso aleatorio eficiente para videojuegos altamente interactivos podrían no ser realisticamente posibles.
+
+\subsubsection{Croquet}
+
+Este modelo presentado en el proyecto Croquet, usa una arquitectura \emph{p2p} descentralizada separando los objetos en islas de las que cada cliente tiene una replica local. Adicionalmente, y para lograr \emph{sequential consistency}, los eventos pasan por un nodo \emph{router} centralizado que se encarga simplemente de colocar marcas de tiempo a los eventos.
+
+Croquet reduce el tráfico de la red usando una vista orientada a los objetos, cada participante simula el comportamiento de los objetos que \emph{hostea}, las variables internas del objeto están encapsuladas y funcionan en base a comportamientos activados por eventos (más ligeros que los estados internos), que pueden recibir de otros objetos.
+
+\emph{Croquet} dejó de desarrollarse para dar paso a \emph{Open Cobalt}, una plataforma para construír y compartir portales 3D virtuales sin la necesidad de servidores centralizados. Ambos proyectos usan una versión modificada de un protocolo basado en \emph{peers} llamado \emph{TeaTime}.
 
 \subsubsection{Mirrored game architecture}
 
@@ -27,3 +35,7 @@ En \emph{Second-Life} hay \emph{sequential consistency} (por definición, ya que
 
 % Meta arquitecturas
 % - interest management, se envian actualizaciones relevantes a cada cliente, menos relevantes (e.g. objetos más lejanos) se envían con menos frecuencia. Puede ser spatial based o class based.
+
+% El uso de islas o burbujas de consecuencialidad como una manera de lograr una mayor escalabilidad.
+
+% El enfoque de Croquet se ve bueno.
