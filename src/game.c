@@ -74,8 +74,8 @@ int main(int argc, char* argv[])
         }
 
         SDL_RenderClear(game_state.screen.renderer);
+        draw_state(game_state.screen.renderer, &stat);
         SDL_RenderPresent(game_state.screen.renderer);
-        draw_state(&game_state.screen.renderer, &stat);
     }
 
     game_quit();
