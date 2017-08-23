@@ -4,7 +4,7 @@ En general, el objetivo de los \emph{mundos virtuales} es crear la ilusión un g
 
 Entre los métodos que han surgido para resolver esta problemática, es emblemático el de los relojes lógicos de L. Lamport \cite{lamport1978time}. Éste último y sus derivados están enfocados en problemas \textbf{discretos}, garantizando que la secuencia correcta de eventos haya sido propagada entre los participantes resultando en un estado coherente entre ellos.
 
-Sin embargo, los videojuegos se tratan de problemas \textbf{continuos} en que los cambios de estado no dependen sólo de eventos sino también del transcurrir del tiempo. A parte de las relaciones de \emph{causalidad} señaladas por Lamport, se agregan las nociones de \emph{concurencia} y \emph{simultaneidad} \cite{liu2012survey}. No siendo una opción detener la ejecución a la espera de un evento, ya que se requiere que los resultados se vean reflejados como si los eventos hubieran sido ejecutadas en el punto que les corresponde en la línea temporal\cite{mauve2004local}.
+Sin embargo, los videojuegos se tratan de problemas \textbf{continuos} en que los cambios de estado no dependen sólo de eventos sino también del transcurrir del tiempo. A parte de las relaciones de \emph{causalidad} señaladas por Lamport, se agregan las nociones de \emph{concurrencia} y \emph{simultaneidad} \cite{liu2012survey}. No siendo una opción detener la ejecución a la espera de un evento, ya que se requiere que los resultados se vean reflejados como si los eventos hubieran sido ejecutadas en el punto que les corresponde en la línea temporal\cite{mauve2004local}.
 
 Otra requerimiento de los videojuegos es la \textbf{responsividad}, que consiste en que el jugador sienta que sus acciones tienen efecto inmediato en el mundo del juego, osea que el tiempo de ejecución de sus eventos sean cercanos al momento en que son emitidos. Ante los retrasos de la red, la consistencia y la responsividad son objetivos encontrados, hacer que los retrasos no afecten a uno implica que tengan que afectar al otro.
 
@@ -12,12 +12,12 @@ Los modelos de consistencia son una formalización de los requisitos de consiste
 
 \subsection{Modelos de \emph{ultimate consistency}}
 
-\paragraph{Causal consistency} Requiere que todos los eventos relacionados causalmente sean percibidos en el mismo orden por los procesos, permitiendo que las operaciones concurrentes no relacionadas se puedan recibir y ejecutar en cualquier órden \cite{lamport1978time}.
+\paragraph{Causal consistency} Requiere que todos los eventos relacionados causalmente sean percibidos en el mismo orden por los procesos, permitiendo que las operaciones concurrentes no relacionadas se puedan recibir y ejecutar en cualquier orden \cite{lamport1978time}.
 
 \paragraph{Sequential consistency} Requiere que el resultado de cualquier ejecución sea el mismo que el que se hubiera dado si las operaciones fueran ejecutados en un orden secuencial consistente con el orden visto en por proceso individual \cite{lamport1979make}.
 % TODO: Leer para explicarlo mejor?
 
-\paragraph{Serializability} Es una extesión de la \emph{sequential consistency} que permite asegurar la ejecución atómica de instrucciones más complejas que lectura y escritura \cite{bernstein1987rrency}.
+\paragraph{Serializability} Es una extensión de la \emph{sequential consistency} que permite asegurar la ejecución atómica de instrucciones más complejas que lectura y escritura \cite{bernstein1987rrency}.
 
 \subsection{Modelos \emph{dead-line based}}
 
@@ -49,7 +49,7 @@ Este modelo presentado en \cite{li2004supporting}, se resume en que la discrepan
     D = \int_{T_a}^{T_b}|s_i(t) - s_j(t)| dt \leq \xi
 \end{align*}
 
-Este modelo de consistencia es una forma \emph{relajada} de la \emph{strict consistency}, que sería cuando $T_b-T_a = 0$ y $\xi = 0$. Buscar este tipo de consistencia da lugar a protocolos que permiten un ajuste gradual entre la posición mostrada de un objeto y la posición estimada en un nodo de referencia. \cite{li2004supporting} muestra el protocolo \emph{continuous synchronization} que con la información obtenida del nodo de referencia, deduce el estado del objeto en el nodo de referencia y ajusta gradualmente el estado local del objeto (ajustando la velocid de los objetos) hasta lograr la sincronización, puede entenderse como un \emph{dead-reckoning}\footnote{Dead-reckoning se basa en recibir los objetos de otro nodo y computar el estado actual que debería tener de acuerdo a la información de avance (posición,velocidad,etc.).} que avanza el objeto más rápido si se sabe que en el nodo de referencia está más avanzado o lo avanza más lento si pasa lo contrario.
+Este modelo de consistencia es una forma \emph{relajada} de la \emph{strict consistency}, que sería cuando $T_b-T_a = 0$ y $\xi = 0$. Buscar este tipo de consistencia da lugar a protocolos que permiten un ajuste gradual entre la posición mostrada de un objeto y la posición estimada en un nodo de referencia. \cite{li2004supporting} muestra el protocolo \emph{continuous synchronization} que con la información obtenida del nodo de referencia, deduce el estado del objeto en el nodo de referencia y ajusta gradualmente el estado local del objeto (ajustando la velocidad de los objetos) hasta lograr la sincronización, puede entenderse como un \emph{dead-reckoning}\footnote{Dead-reckoning se basa en recibir los objetos de otro nodo y computar el estado actual que debería tener de acuerdo a la información de avance (posición,velocidad,etc.).} que avanza el objeto más rápido si se sabe que en el nodo de referencia está más avanzado o lo avanza más lento si pasa lo contrario.
 
 \subsection{Requerimientos de consistencia para juegos multijugador online}
 
@@ -57,6 +57,6 @@ Adicionalmente a estos modelos de consistencia, \cite{palant2006consistency} se�
 
 \paragraph{Physical consistency} El que todos los eventos del mundo virtual visibles por el jugador tienen que cumplir con el modelo físico del mundo (sus reglas).
 
-\paragraph{State consistency} Cualquier cambio en el estado del juego que sea importante para más de un jugador debe ser señalado a estos con una diferencia de tiempo muy baja o nula. Por ejemplo, los cambios en el marcador de puntaje. Se distinguir entre cambios del mundo y cambios en los ávatares de lo jugadores.
+\paragraph{State consistency} Cualquier cambio en el estado del juego que sea importante para más de un jugador debe ser señalado a estos con una diferencia de tiempo muy baja o nula. Por ejemplo, los cambios en el marcador de puntaje. Se distinguir entre cambios del mundo y cambios en los avatares de lo jugadores.
 
 \paragraph{Reaction consistency} Las acciones de un jugador no deben parecer irracionales en las vistas de otros jugadores a menos que sean irracionales en la vista de ese mismo jugador.
