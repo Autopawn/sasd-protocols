@@ -17,6 +17,17 @@
 #include <netutils.h>
 #include <balls/balls.h>
 
+static int lags[MAX_PLAYERS][MAX_PLAYERS] = {
+    {0,  0, 30, 0, 0, 0, 0, 0},
+    {0,  0, 30, 0, 0, 0, 0, 0},
+    {30, 0, 30, 0, 0, 0, 0, 0},
+    {0,  0,  0, 0, 0, 0, 0, 0},
+    {0,  0,  0, 0, 0, 0, 0, 0},
+    {0,  0,  0, 0, 0, 0, 0, 0},
+    {0,  0,  0, 0, 0, 0, 0, 0},
+    {0,  0,  0, 0, 0, 0, 0, 0}
+};
+
 struct {
     int running;
 
@@ -109,13 +120,14 @@ int main(int argc, char* argv[])
     int trace_size = 512;
 
     auto_vec_t state_trace = vec_create(trace_size, sizeof(state), 0);
-    auto_vec_t event_trace = vec_create(trace_size, sizeof(uintptr_t), 1);
+    auto_vec_t event_trace = vec_create(trace_size, sizeof(ev_vec_t), 1);
+    auto_vec_t event_buffer = vec_create(trace_size, sizeof(ev_vec_t), 1);
 
     vec_set(&state_trace, 0, &stat);
 
     int events_max = 16;
 
-    event event_buffer[8];
+    //event event_buffer[8];
     int n_events = 0;
 
     int min_frame = 1;
@@ -163,7 +175,9 @@ int main(int argc, char* argv[])
     send_packet(socket, &connect, EVENT);
 
     SDL_Event sdl_event;
+
     while (game_state.running) {
+        Uint32 frame_start = SDL_GetTicks();
         vec_set(&state_trace, frame, &stat);
 
         if (vec_get(event_trace, frame + local_lag, &ev_vec) == -1 || ev_vec == 0) {
@@ -218,10 +232,19 @@ int main(int argc, char* argv[])
         // Receive events
         while (recvpool_retrieve(&pool, &packet, 1) != -1) {
             if (packet.ptype == EVENT) {
-                //printf("event from %d - %d\n", packet.sender_id, packet.payload.event.player);
                 event remote_ev = packet.payload.event;
 
-                if (vec_get(event_trace, remote_ev.frame, &ev_vec) == -1 || ev_vec == NULL) {
+                int q = remote_ev.summon_frame + lags[player][remote_ev.player];
+                q = (lags[player][remote_ev.player] == 0 || q < frame) ? frame : q;
+
+                if (vec_get(event_buffer, q, &ev_vec) == -1 || ev_vec == 0) {
+                    ev_vec = ev_vec_create();
+                    vec_set(&event_buffer, q, &ev_vec);
+                }
+                ev_vec_push(&ev_vec, remote_ev);
+
+
+                /*if (vec_get(event_trace, remote_ev.frame, &ev_vec) == -1 || ev_vec == 0) {
                     ev_vec = ev_vec_create();
                     vec_set(&event_trace, remote_ev.frame, &ev_vec);
                 }
@@ -229,8 +252,24 @@ int main(int argc, char* argv[])
 
                 if (remote_ev.frame < min_frame) {
                     min_frame = remote_ev.frame;
-                }
+                }*/
+            }
+        }
 
+        if (vec_get(event_buffer, frame, &ev_vec) != -1 && ev_vec != 0) {
+            for (int i = 0; i < ev_vec->wptr; i++) {
+                ev_vec_t trace_ev;
+                event remote_ev = ev_vec->evs[i];
+
+                if (vec_get(event_trace, remote_ev.frame, &trace_ev) == -1 || trace_ev == 0) {
+                    trace_ev = ev_vec_create();
+                    vec_set(&event_trace, remote_ev.frame, &trace_ev);
+                }
+                ev_vec_push(&trace_ev, remote_ev);
+
+                if (remote_ev.frame < min_frame) {
+                    min_frame = remote_ev.frame;
+                }
             }
         }
 
@@ -258,8 +297,13 @@ int main(int argc, char* argv[])
                    game_state.screen.w, game_state.screen.h);
         SDL_RenderPresent(game_state.screen.renderer);
 
+        Uint32 frame_end = SDL_GetTicks();
+        int delay = 25 - (frame_end - frame_start);
+
         // Not good approach for now, use a clock.
-        SDL_Delay(25);
+        if (delay > 0) {
+            SDL_Delay(delay);
+        }
         frame++;
         min_frame = frame;
     }
