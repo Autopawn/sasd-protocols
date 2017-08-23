@@ -13,7 +13,7 @@
 \textbf{Arquitectura} & \textbf{Consistencia vs responsividad} & \textbf{Escalabilidad} \\ \hline
 Simulator-Centric &
 El \emph{server} asegura \emph{sequential consistency}, sin embargo el que los eventos deban llegarle a este y que el mismo deba procesar la evolución de los estados disminuye la velocidad con que llegan las actualizaciones, sobre todo \emph{cliente-cliente}. Técnicas como \emph{dead-reckoning} se usan para simular una mejor \emph{responsividad}. &
-El servidor se transforma en un cuello de botella, tanto por la capacidad de procesamiento como de la red, aun cuando esto se puede mejorar usando \emph{proxies}. Generalmente se tiene que optar por construír con partes aisladas y limitar la cantidad de jugadores a dichas partes. \\
+El servidor se transforma en un cuello de botella, tanto por la capacidad de procesamiento como de la red, aun cuando esto se puede mejorar usando \emph{proxies}. Generalmente se tiene que optar por construir con partes aisladas y limitar la cantidad de jugadores a dichas partes. \\
 \hline
 Datos separados de computación (Darkstar) &
 Antes de que se pueda asegurar consistencia debe transcurrir mucho tiempo, lo que da paso a mucha inconsistencia (sobretodo si clientes se conectan a servidores distintos que acceden a la misma data) o una responsividad muy baja. &
@@ -26,7 +26,7 @@ Enviar eventos en vez de objetos evita congestionar la red. \newline
 Si las \emph{islas} de objetos se pueden organizar de manera efectiva, no debería ser significativa la carga de los clientes por replicar el estado, de otra manera y a gran escala tanto este beneficio como los anteriores pueden verse afectados. \newline El sólo envío de eventos requiere mecanismos de \emph{rollback} que hacen un poco más pesada la carga en el cliente. \\
 \hline
 Mirrored game architectures &
-Desde el punto de vista del cliente el \emph{retraso} debería ser igual que en un \emph{simulator-centric}, sin embargo, si se tienen dos clientes conectados a \emph{mirrors} diferentes, verán un retraso mayor entre ellos (dado que los \emph{mirrors} deben coordinarse), por lo que tiene más sentido utilizarlo para juegos coolaborativos.  &
+Desde el punto de vista del cliente el \emph{retraso} debería ser igual que en un \emph{simulator-centric}, sin embargo, si se tienen dos clientes conectados a \emph{mirrors} diferentes, verán un retraso mayor entre ellos (dado que los \emph{mirrors} deben coordinarse), por lo que tiene más sentido utilizarlo para juegos colaborativos.  &
 Sin una técnica que distribuya los estados entre los \emph{mirrors}, cada \emph{mirror} tiene que tener una copia completa del estado y realizar todo el procesamiento, por lo que parece ser una mejor opción que \emph{simulator-centric} sólo cuando el cuello de botella está en la cantidad de jugadores que pueden conectarse o, más generalmente, en la capacidad de la red.\\
 \hline
 \end{longtable}

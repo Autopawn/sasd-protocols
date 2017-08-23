@@ -8,7 +8,7 @@
 
 % Señalar algo del protocolo continuous synchronization ?
 
-A continuación se describen los protocolos implementados, cada uno diseñado para ser representativo de una técnica particular para lograr simulaciones distribuídas.
+A continuación se describen los protocolos implementados, cada uno diseñado para ser representativo de una técnica particular para lograr simulaciones distribuidas.
 
 Para todos los protocolos que se revisarán en este trabajo se llegó a la conclusión de que la forma más simple de trabajar es manteniendo simulaciones locales completas del estado del juego (replicas) que son afectadas por eventos de teclado de los clientes, específicamente pulsar y soltar teclas.
 
@@ -37,13 +37,13 @@ Que recibe un estado actual y un conjunto de eventos (cuyo tiempo de ejecución 
 En este protocolo el servidor enviará constantemente los estados completos del juego a los clientes, cada vez que llegue un estado del juego a un cliente, llegará en el pasado producto del retraso de la red, así que este deberá avanzarlo con la función hasta alcanzar el estado que se debería mostrar actualmente.
 
 Los clientes enviarán sus eventos al servidor (el cuál también estará corriendo una simulación) y este los ejecutará a penas lleguen, los otros clientes verán los efectos de este evento cuando les lleguen los nuevos estados del servidor, % inevitablemente observando saltos
-el cliente podrá registrar eventos propios en su simulación local intentando ajustar el \emph{local-lag} para que su \emph{frame} de ejecución sea la misma que la en que el evento llege al servidor.
+el cliente podrá registrar eventos propios en su simulación local intentando ajustar el \emph{local-lag} para que su \emph{frame} de ejecución sea la misma que la en que el evento llegue al servidor.
 
 \subsubsection{Protocolo con Time-warp}
 
 % TODO: señalar lo que se pueda sacar del paper A Testbed for P2P gamming using Time-warp.
 
-Este protocolo está diseñado para arquitecturas \emph{p2p} más que para \emph{cliente-servidor}, e inicialmente fue presentado como una alternativa a los otros protocolos basados en \emph{Network Paradigm} para sistemas distribuídos y no replicados sino distribupidos, cada cliente envía sus eventos a todos los otros clientes, agregando un \emph{local-lag} que estime conveniente, uno muy bajo generará varias inconsistencias, requiriendo muchos \emph{rollbacks} en otros clientes, mientras que uno muy alto hará el juego notoriamente poco responsivo al jugador.
+Este protocolo está diseñado para arquitecturas \emph{p2p} más que para \emph{cliente-servidor}, e inicialmente fue presentado como una alternativa a los otros protocolos basados en \emph{Network Paradigm} para sistemas no replicados sino distribuidos, cada cliente envía sus eventos a todos los otros clientes, agregando un \emph{local-lag} que estime conveniente, uno muy bajo generará varias inconsistencias, requiriendo muchos \emph{rollbacks} en otros clientes, mientras que uno muy alto hará el juego notoriamente poco responsivo al jugador.
 
 Cada cliente almacena los estados pasados en una \emph{traza} de estados y también los eventos que le llegan, si llega un evento con \emph{frame} de ejecución en el pasado, debe descartar los estados de la \emph{traza} desde ese punto en adelante y recomputarla hasta el estado actual.
 
@@ -59,9 +59,9 @@ El protocolo que se implementará manejará las inconsistencias de la misma mane
 
 \subsubsection{Protocolo con Trailing State Syncronization}
 
-Diseñado para los requerimientos de shooter first-person distribuídos. Mantiene en memoria estados correspondientes a ciertas cantidades de frames en el pasado (ordenados según esta cantidad de frames) llamados \emph{trailing states}, estos se avanzan junto con el estado que se está mostrando al jugador, de manera que su retraso con la frame actual se mantiene constante. A diferencia de \emph{timewarp}, se guardan menos estados.
+Diseñado para los requerimientos de shooter first-person distribuidos. Mantiene en memoria estados correspondientes a ciertas cantidades de \emph{frames} en el pasado (ordenados según esta cantidad de \emph{frames}) llamados \emph{trailing states}, estos se avanzan junto con el estado que se está mostrando al jugador, de manera que su retraso con la \emph{frame} actual se mantiene constante. A diferencia de \emph{time-warp}, se guardan menos estados.
 
-Cuando se detecta una inconsistencia, se toma el \emph{trailing state} de la frame más nueva que no la tiene y se hace avanzar hasta obtener la frame actual, dejando copias que reemplazan los \emph{trailing states} correspondientes a las frames más actuales a la inconsistencia. Se requiere que el útimo \emph{trailing state} siempre sea más antiguo que cualquier inconsistencia.
+Cuando se detecta una inconsistencia, se toma el \emph{trailing state} de la \emph{frame} más nueva que no la tiene y se hace avanzar hasta obtener la \emph{frame} actual, dejando copias que reemplazan los \emph{trailing states} correspondientes a las \emph{frames} más actuales a la inconsistencia. Se requiere que el último \emph{trailing state} siempre sea más antiguo que cualquier inconsistencia.
 
 Aunque la versión que se programará trata eventos pasados como inconsistencias, cave mencionar que TSS en su forma original detecta las inconsistencias cuando los cambios producidos por un evento son diferentes a los cambios producidos por el mismo evento ejecutado en los \emph{trailing states} adelantados. Esta comparación, que se realiza cuando el \emph{trailing state} anterior alcanza la \emph{frame} del evento, evita tener que hacer \emph{rollback} cuando los eventos no generaron cambios significativos, además el ``esperar'' hasta llegar a dicha \emph{frame} permite que varias inconsistencias se manejen en un mismo \emph{rollback} disminuyendo el procesamiento requerido.
 

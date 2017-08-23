@@ -20,20 +20,20 @@
 \\ \hline
 Centralizado con \emph{dead-reckoning}
 &
-El retraso aumenta dado que los eventos tienen que ser procesados por el servidor, se puede aplicar un \emph{local-lag} una vez los eventos llegan al servidor para disminuír las inconsistencias en los clientes, pero a costa de una responsividad aun peor.
+El retraso aumenta dado que los eventos tienen que ser procesados por el servidor, se puede aplicar un \emph{local-lag} una vez los eventos llegan al servidor para disminuir las inconsistencias en los clientes, pero a costa de una responsividad aun peor.
 &
 Que los eventos se ejecuten al momento que lleguen al servidor y que este mantenga una copia autoritaria del estado del juego asegura que los clientes no abusen con los tiempos de ejecución asociados a sus eventos.
 &
 El servidor se convierte en un cuello de botella, por el costo de procesamiento de correr una instancia del juego y por la capacidad de la red, ya que debe conectarse con todos los clientes.
 \\ \hline
-Time-warp
+T
 &
 Los \emph{local-lags} se pueden ajustar para balancear de la mejor manera posible los efectos del retraso de la red entre consistencia y responsividad.
 &
-Por si sólo, no hay forma de asegurar que los clientes asocien tiempos de ejecución correctos a sus eventos, pudiendo lograr una mayor responsibidad afectando la consistencia del resto.
+Por si sólo, no hay forma de asegurar que los clientes asocien tiempos de ejecución correctos a sus eventos, pudiendo lograr una mayor responsividad afectando la consistencia del resto.
 &
 A parte de tener que hacer la actualización de estado determinista, abstrae la programación del juego. \newline
-Se puede extender a varios clientes sin modificar el código, pero por ser \emph{p2p} está limitado por la cantidad de conexiónes, requiriendo un método para estructurar la red más complejo que conectar todos con todos. El mantener y copiar constantemente estados anteriores y los \emph{rollbacks} requieren verias veces más capacidad de procesamiento y memoria por parte de los clientes.
+Se puede extender a varios clientes sin modificar el código, pero por ser \emph{p2p} está limitado por la cantidad de conexiones, requiriendo un método para estructurar la red más complejo que conectar todos con todos. El mantener y copiar constantemente estados anteriores y los \emph{rollbacks} requieren varias veces más capacidad de procesamiento y memoria por parte de los clientes.
 \\ \hline
 Fast event ordering
 &
@@ -41,14 +41,14 @@ Los retrasos de la red afectan completamente responsividad en pos de lograr cons
 &
 Conociendo cómo funciona el algoritmo, un cliente puede mentir respecto a sus retrasos con los otros clientes para beneficiarse o afectar el correcto funcionamiento de la red, al igual que los otros protocolos \emph{p2p} puede enviar eventos diferentes a clientes diferentes para hacer diverger las replicas.
 &
-Al igual que \emph{time-warp} está limitado por la cantidad de conexiones, si se busca una mayor cantidad de clientes y que estos no esté conectados todos con todos se requiere un método para hacer una red estructurada.
+Al igual que \emph{Timewarp} está limitado por la cantidad de conexiones, si se busca una mayor cantidad de clientes y que estos no esté conectados todos con todos se requiere un método para hacer una red estructurada.
 \newline Consume muchos menos recursos de parte del cliente.
 \\ \hline
 Trailing State Syncronization
 &
 La corrección de inconsistencias no es inmediata como en \emph{timewarp}, se espera hasta que se detectan, esto se suma al retraso de la red, por otro lado, si los eventos no afectan el estado del resultado, no se requiere hacer \emph{rollback}.
 &
-Tiene los mismos problemas que \emph{time-warp}.
+Tiene los mismos problemas que \emph{Timewarp}.
 &
 Que se espere hasta detectar la inconsistencia permite resolver varias inconsistencias al mismo tiempo (aunque afecta un poco la responsividad), ahorrando procesamiento, al mismo tiempo, se requiere mucho menos memoria para guardar los estados anteriores, aunque se debe avanzar todos los \emph{trailing states} cada \emph{frame}, lo que puede ser desventajoso si esto es mucho más costoso que copiar un estado.
 \\ \hline

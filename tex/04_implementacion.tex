@@ -1,8 +1,9 @@
 \section{Implementación}
 
 
-\subsection{Estructura general del framework}
+\subsection{Estructura general del \emph{framework}}
 
+<<<<<<< HEAD
 La implementación se divide en una sección de manipulación de \emph{streams} por la red, otra que actualiza los estados de la aplicación en respuesta a eventos y una tercera que se encarga de renderizar el estado de la aplicación.
 
 Esta elección de estructura se basa en la modularidad de cada funcionalidad, ya que el manejo de la red se puede reutilizar para distintos protocolos y la lógica del cliente es completamente atómica y \textbf{determinista}.
@@ -10,6 +11,9 @@ Esta elección de estructura se basa en la modularidad de cada funcionalidad, ya
 El determinismo es clave para la implementación del \emph{framework}, ya que la sincronización no se basa a partir de paquetes que definen el estado en los distintos clientes, si no que los eventos emitidos en cada uno de ellos. De esta manera, si la lógica de la aplicación es determinista, basta con intercambiar el input percibido en cada cliente con el resto de los nodos para poder implementar la sincronización dependiendo del protocolo escogido.
 
 Como detalles adicionales, cabe destacar el desarrollo de diferentes utilidades que ofrecen un uso más sencillo de estructuras de datos dinámicas y serialización de datos. Además en la sección de renderización del cliente, el dibujo de cada iteración no es borrado completamente de la pantalla para poder ver claramente la consistencia que otorga el protocolo.\footnote{https://github.com/Autopawn/sasd-protocols}
+=======
+%
+>>>>>>> bc9ce5c2e51a349c439f7402efb789474a959d16
 
 \subsection{Simulación de la latencia entre clientes}
 
@@ -47,6 +51,7 @@ Para mantener la implementación sencilla, el servidor se encarga de levantar un
 
 \begin{enumerate}
 	\item Esperar a que haya un \emph{stream} de datos listo para leer o recibir una notificación indicando que el \emph{buffer} de envío (\emph{stream} en cola que se debe enviar al cliente conectado) ha sido escrito por otro \emph{thread}. \textbf{Nota:} ambas cosas pueden pasar simultáneamente.
+<<<<<<< HEAD
 	\item Recibir los datos desde el cliente remoto (si es que hay información disponible para leer) y agregarlos a un \emph{buffer} acumulativo.
 	\item Si hay suficiente información en el \emph{buffer} acumulativo, seccionarlo tantas veces como sea posible en paquetes delimitados.
 	\item Escribir todos los paquetes seccionados a un \emph{buffer} histórico. Este buffer mantiene el stream que ha enviado el cliente durante todo el tiempo que ha estado conectado.
@@ -82,3 +87,7 @@ Para que las operaciones de red no interfieran con la lógica del cliente (que a
 
 
 
+=======
+	\item Recibir los datos desde el cliente remoto (leer datos recibidos) y agregarlos a un \emph{buffer} acumulativo.
+\end{enumerate}
+>>>>>>> bc9ce5c2e51a349c439f7402efb789474a959d16
