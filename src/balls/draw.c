@@ -15,7 +15,7 @@ static const int colors[][3] = {
 static const int n_colors = 10;
 
 void draw_state(SDL_Renderer* renderer, const state *stat,
-        int width, int height){
+        int width, int height, unsigned char alpha){
     int space, offset_x, offset_y;
     if(width>=height){
         space = height-2*BORDER_PIXELS;
@@ -30,11 +30,11 @@ void draw_state(SDL_Renderer* renderer, const state *stat,
     //
     SDL_Rect arena = {offset_x, offset_y, space, space};
     SDL_SetRenderDrawBlendMode(renderer,SDL_BLENDMODE_BLEND);
-    SDL_SetRenderDrawColor(renderer,127,127,127,32);
+    SDL_SetRenderDrawColor(renderer,127,127,127,alpha);
     SDL_RenderFillRect(renderer,NULL);
-    SDL_SetRenderDrawColor(renderer,143,143,143,32);
+    SDL_SetRenderDrawColor(renderer,143,143,143,alpha);
     SDL_RenderFillRect(renderer,&arena);
-    SDL_SetRenderDrawColor(renderer,0,0,0,32);
+    SDL_SetRenderDrawColor(renderer,0,0,0,alpha);
     SDL_RenderDrawRect(renderer,&arena);
 
     int n_scores = 0;
