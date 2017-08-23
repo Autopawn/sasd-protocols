@@ -125,14 +125,8 @@ int main(int argc, char* argv[])
 
     vec_set(&state_trace, 0, &stat);
 
-    int events_max = 16;
-
-    //event event_buffer[8];
-    int n_events = 0;
-
     int min_frame = 1;
     int frame = 1;
-    int max_frame = 0; // deprecate?
 
     int local_lag = 8;
 
@@ -242,17 +236,6 @@ int main(int argc, char* argv[])
                     vec_set(&event_buffer, q, &ev_vec);
                 }
                 ev_vec_push(&ev_vec, remote_ev);
-
-
-                /*if (vec_get(event_trace, remote_ev.frame, &ev_vec) == -1 || ev_vec == 0) {
-                    ev_vec = ev_vec_create();
-                    vec_set(&event_trace, remote_ev.frame, &ev_vec);
-                }
-                ev_vec_push(&ev_vec, remote_ev);
-
-                if (remote_ev.frame < min_frame) {
-                    min_frame = remote_ev.frame;
-                }*/
             }
         }
 
