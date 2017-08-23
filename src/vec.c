@@ -2,19 +2,20 @@
 #include <stdlib.h>
 #include <string.h>
 
-vec_t __vec_grow(vec_t* vec_ref)
+vec_t __vec_grow(vec_t* vec_ref, size_t i)
 {
     vec_t vec = *vec_ref;
     size_t prev_size = vec->size;
     size_t count = vec_size(vec);
-    count += count / 2;
+    while (i >= count) {
+        count += count / 2;
+    }
     vec->size = count * vec->elem_size;
     vec = *vec_ref = realloc(vec, sizeof(*vec) + vec->size);
 
     if (vec->zero_fill) {
         memset(vec->data + prev_size, 0, vec->size - prev_size);
     }
-
     return vec;
 }
 
@@ -41,7 +42,7 @@ void vec_set(vec_t* vec_ref, size_t i, const void* elem)
 {
     vec_t vec = *vec_ref;
     if (i >= vec_size(vec)) {
-        vec = __vec_grow(vec_ref);
+        vec = __vec_grow(vec_ref, i);
     }
     memcpy(vec->data + i * vec->elem_size, elem, vec->elem_size);
 }
