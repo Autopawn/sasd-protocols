@@ -1,5 +1,14 @@
 \section{Conclusiones}
 
+Respecto a las arquitecturas, \emph{peer-to-peer} con \emph{router} parece ser el más escalable de todos, quedó claro que el las arquitecturas \emph{simulator-centric} tienen un límite, aunque si en el mundo virtual que se quiere lograr es factible crear islas de objetos (y jugadores) o lograr un buen \emph{interest management} que \emph{granule} de manera abrupta los datos y el procesamiento, por razones de simpleza conviene usar \emph{simulator-centric}. En general los protocolos \emph{peer-to-peer} enfrentan desafíos de seguridad mucho mayores pues tienen que confiar en los clientes, pero el aplicar un \emph{router} resuelve este problema de seguridad y también el de a consistencia.
+
+En los \emph{papers} investigados, no se encontraron sugerencias de métodos de interpolación en la visualización que permitan mostrar al jugador las inconsistencias de manera más suavizada, sin embargo parece lógico que esto debería realizarse (aunque los nuevos estados computados no se muestren de manera inmediata). En \cite{li2004supporting} las inconsistencias se muestran interpoladas aunque esto es el resultado del protocolo más que una técnica separada. Otro técnica paralela que podría ser necesario de usar, dependiendo del tipo de simulación, es separar los cambios \emph{duros} de los \emph{suaves}, siendo los primeros cosas significativas para el jugador, como la muerte de su ávatar o el cambio en el puntaje, estos cambios no deberían revertirse por lo que, dentro de lo posible, sólo deberían notificarse cuando ha pasado un tiempo de confirmación.
+
+Se concluye que los protocolos se puede adaptar a casi cualquier arquitectura, pues se encargan de tratar la comunicación entre cada par de clientes y el manejo de la información local, mientras que el de las arquitecturas se preocupan de qué nodos conectar y que infraestructura de apoyo brindar, por ejemplo el protocolo con \emph{dead-reckoning} se puede implementar en una arquitecture \emph{peer-to-peer} si uno de los clientes actúa como servidor. Aun así, hay que considerar de la combinación que se está ocupando si esto refuerza los cuellos de botella de procesamiento y uso de la red, así como tener las consideraciones de seguridad correspondientes, intentado evitar responsabilizar a los clientes de otra cosa que sus eventos, de otra manera habría que añadir mecanismos de detección de trampas. De hecho, arquitecturas más avanzadas usan diferentes protocolos en conjunto para conjuntos de objetos o eventos que tienen requisitos diferentes.
+
+% Aunque el trabajo original indica que se puede usar \emph{dead-reckoning} para hacer aparentemente más responsivo la simulación, esto no es posible sin lograr inconsistencias a nivel local, por lo que se requeriría, por ejemplo, algún método de interpolación para \emph{suavizar} la percepción de estas inconsistencias -> ojo, pero esto rompería el que se cumplan las reglas físicas en ciertos casos de mucha discrepancia. señalar que \cite{li2004supporting} hace esto (aunque no se programó).
+
+
 % Concluír cosas...
 %
 % E.g.:
@@ -10,7 +19,7 @@
 % - Qué cosas se podrían investigar más.
 % - ... ¡Y muchas más!
 
-% El problema adicional en comparación con otros sistemas distribuídos al que se ven vistos los videojuegos es que requieren una interacción muy cercana con el usuario, si se sigue la analogía de una base de datos, un jugador equivaldría a hacer constantemente operaciones de lectura que deben responderse de manera inmediata y como esto no es posible, ...
+
 
 % Hay una diferencia entre hacer dead reckoning con objetos manejados por cada usuario a hacerlo con eventos... elaborate more.
 
@@ -36,3 +45,5 @@
 % Sistema híbrido no determinista en que haya comunicación p2p y un servidor con estados mandatorios para coordinar cada cierto tiempo.
 
 % Arquitecturas más avanzadas combinan los métodos y protocolos, categorizando eventos según sus propiedades.
+
+% Conclusion sobre (me olvidé)

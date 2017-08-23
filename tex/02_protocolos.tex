@@ -14,8 +14,6 @@ Para todos los protocolos que se revisarán en este trabajo se llegó a la concl
 
 El tratar todo el estado del juego como un sólo objeto tiene la desventaja de que todos los nodos deben realizar todo el procesamiento de la partida (por lo tanto se habla de que es un sistema replicado), en contraste con lo que sería que cada nodo compute ciertos objetos y se encargue de informar a otros nodos sobre su posición actualizada (y por ejemplo su velocidad para que puedan aplicar mecanismos básicos de predicción).
 
-% TODO: Recordar diferencia entre métodos sincronicos y asincrónicos señalado en la propuesta de proyecto (todos los objetos avanzan juntos o no), hablar también de simulaciones discretas o continuas.
-
 A pesar de lo anterior, hacer esto evita tener que programar mecanismos de predicción (pues se utilizan las mismas mecánicas del juego) y tener que aplicar \emph{rollbacks} complejos, e.g. si un nodo envía una actualización errada de un objeto del cual es responsable debido a una interacción con otro objeto que posteriormente descubre que no debería haber pasado, debido a una actualización retrasada de ese objeto; esto obligaría a utilizar antimensajes, por otro lado las pulsaciones de teclas son hechos concretos que no pueden revertirse.
 
 Los protocolos presentados están diseñados para \emph{p2p}, salvo el basado en \emph{dead-reckoning} que corresponde a una arquitectura \emph{cliente-servidor}.
@@ -29,7 +27,6 @@ En términos generales, la ejecución se concretiza por una función determinist
     f : S \times \mathbb{P}(E) \rightarrow S
 \end{align*}
 Que recibe un estado actual y un conjunto de eventos (cuyo tiempo de ejecución corresponde al del estado actual) y entrega el estado siguiente. Donde $S$ es el conjunto de posibles estados y $E$ el conjunto de posibles eventos.
-
 
 \subsection{Detalles de los protocolos}
 
