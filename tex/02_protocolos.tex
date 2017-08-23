@@ -39,9 +39,9 @@ En este protocolo el servidor enviará constantemente los estados completos del 
 Los clientes enviarán sus eventos al servidor (el cuál también estará corriendo una simulación) y este los ejecutará a penas lleguen, los otros clientes verán los efectos de este evento cuando les lleguen los nuevos estados del servidor, % inevitablemente observando saltos
 el cliente podrá registrar eventos propios en su simulación local intentando ajustar el \emph{local-lag} para que su \emph{frame} de ejecución sea la misma que la en que el evento llegue al servidor.
 
-\subsubsection{Protocolo con Time-warp}
+\subsubsection{Protocolo con Timewarp}
 
-% TODO: señalar lo que se pueda sacar del paper A Testbed for P2P gamming using Time-warp.
+% TODO: señalar lo que se pueda sacar del paper A Testbed for P2P gamming using Timewarp.
 
 Este protocolo está diseñado para arquitecturas \emph{p2p} más que para \emph{cliente-servidor}, e inicialmente fue presentado como una alternativa a los otros protocolos basados en \emph{Network Paradigm} para sistemas no replicados sino distribuidos, cada cliente envía sus eventos a todos los otros clientes, agregando un \emph{local-lag} que estime conveniente, uno muy bajo generará varias inconsistencias, requiriendo muchos \emph{rollbacks} en otros clientes, mientras que uno muy alto hará el juego notoriamente poco responsivo al jugador.
 
@@ -53,13 +53,13 @@ Este protocolo se basa en mantener los clientes con diferentes desfasados entre 
 
 La idea principal es conocer los retrasos entre cada par de clientes y aplicar retrasos suficientemente grandes para que, suponiendo de manera optimista que estos retrasos no aumenten con el tiempo, no sea necesario aplicar \emph{rollbacks}, los retrasos se minimizan a costa de que los nodos queden desfasados entre sí.
 
-El protocolo que se implementará manejará las inconsistencias de la misma manera que \emph{time-warp}.
+El protocolo que se implementará manejará las inconsistencias de la misma manera que \emph{timewarp}.
 
 % Proveé un estado consistente tan rápido como lo permite la red y trabaja bien con estrategias basadas en \emph{dead reackoning}, funcionando con media discreta y continua.
 
 \subsubsection{Protocolo con Trailing State Syncronization}
 
-Diseñado para los requerimientos de shooter first-person distribuidos. Mantiene en memoria estados correspondientes a ciertas cantidades de \emph{frames} en el pasado (ordenados según esta cantidad de \emph{frames}) llamados \emph{trailing states}, estos se avanzan junto con el estado que se está mostrando al jugador, de manera que su retraso con la \emph{frame} actual se mantiene constante. A diferencia de \emph{time-warp}, se guardan menos estados.
+Diseñado para los requerimientos de shooter first-person distribuidos. Mantiene en memoria estados correspondientes a ciertas cantidades de \emph{frames} en el pasado (ordenados según esta cantidad de \emph{frames}) llamados \emph{trailing states}, estos se avanzan junto con el estado que se está mostrando al jugador, de manera que su retraso con la \emph{frame} actual se mantiene constante. A diferencia de \emph{timewarp}, se guardan menos estados.
 
 Cuando se detecta una inconsistencia, se toma el \emph{trailing state} de la \emph{frame} más nueva que no la tiene y se hace avanzar hasta obtener la \emph{frame} actual, dejando copias que reemplazan los \emph{trailing states} correspondientes a las \emph{frames} más actuales a la inconsistencia. Se requiere que el último \emph{trailing state} siempre sea más antiguo que cualquier inconsistencia.
 
@@ -67,6 +67,6 @@ Aunque la versión que se programará trata eventos pasados como inconsistencias
 
 % \subsubsection{Otros protocolos y métodos}
 
-% NOTE: Se menciona bucket syncronization, breathing bucket syncronization y  time-warp syncronization, que fueron creador primero para simulaciones militares.
+% NOTE: Se menciona bucket syncronization, breathing bucket syncronization y  timewarp syncronization, que fueron creador primero para simulaciones militares.
 
 % Continuous synchronization, Bucket synchronization, Predictive Time management.
