@@ -260,22 +260,16 @@ int main(int argc, char* argv[])
         for (int i = min_frame; i <= frame; i++) {
             vec_get(state_trace, i - 1, &stat);
             if (vec_get(event_trace, i, &ev_vec) != -1 && ev_vec != 0) {
-                //vec_get(state_trace, i - 1, &stat);
                 stat = advance_state(&stat, ev_vec->evs, ev_vec->wptr);
-                //vec_set(&state_trace, i, &stat);
 
             } else {
                 // stat should remain being the last updated state
                 // if no input is found in frame i, then copy previous
                 // state
                 stat = advance_state(&stat, NULL, 0);
-                //vec_set(&state_trace, i, &stat);
             }
             vec_set(&state_trace, i, &stat);
         }
-
-        //SDL_SetRenderDrawColor(game_state.screen.renderer, 127, 127, 127, 255);
-        //SDL_RenderClear(game_state.screen.renderer);
         draw_state(game_state.screen.renderer, &stat,
                    game_state.screen.w, game_state.screen.h,64);
         SDL_RenderPresent(game_state.screen.renderer);
@@ -283,7 +277,6 @@ int main(int argc, char* argv[])
         Uint32 frame_end = SDL_GetTicks();
         int delay = 25 - (frame_end - frame_start);
 
-        // Not good approach for now, use a clock.
         if (delay > 0) {
             SDL_Delay(delay);
         }
