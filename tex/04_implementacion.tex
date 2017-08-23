@@ -3,10 +3,25 @@
 
 \subsection{Estructura general del framework}
 
-% 
+La implementación se divide en una sección de manipulación de \emph{streams} por la red, otra que actualiza los estados de la aplicación en respuesta a eventos y una tercera que se encarga de renderizar el estado de la aplicación.
+
+Esta elección de estructura se basa en la modularidad de cada funcionalidad, ya que el manejo de la red se puede reutilizar para distintos protocolos y la lógica del cliente es completamente atómica y \textbf{determinista}.
+
+El determinismo es clave para la implementación del \emph{framework}, ya que la sincronización no se basa a partir de paquetes que definen el estado en los distintos clientes, si no que los eventos emitidos en cada uno de ellos. De esta manera, si la lógica de la aplicación es determinista, basta con intercambiar el input percibido en cada cliente con el resto de los nodos para poder implementar la sincronización dependiendo del protocolo escogido.
+
+Como detalles adicionales, cabe destacar el desarrollo de diferentes utilidades que ofrecen un uso más sencillo de estructuras de datos dinámicas y serialización de datos. Además en la sección de renderización del cliente, el dibujo de cada iteración no es borrado completamente de la pantalla para poder ver claramente la consistencia que otorga el protocolo.\footnote{https://github.com/Autopawn/sasd-protocols}
 
 \subsection{Simulación de la latencia entre clientes}
 
+Para hacer comparaciones entre las distintas implementaciones de protocolos se desarrolla un método de simulación de latencia entre clientes. Para mantener la simulación simple, cada cliente es inicializado con una matriz de latencias con dimensiones $n\times n$ donde $n$ es la cantidad máxima de jugadores. Como su nombre lo dice, esta matriz relaciona la latencia \textbf{dirigida} entre 2 jugadores.
+
+Para comprender su funcionamiento, se deben entender los conceptos:
+\begin{itemize}
+	\item \emph{frame}: se trata del número de iteración del procesamiento en el lado del cliente en el que cierto evento debe ser ejecutado.
+	\item \emph{summoned\_frame}: se trata del número de iteración del procesamiento en el lado del cliente en el que cierto evento fue emitido.
+\end{itemize}
+
+Entonces, si no existe latencia simulada entre 2 clientes, un paquete es puesto en cola para ser procesado en la iteración \emph{frame} inmediatamente al ser recibido, mientras que, si existe una latencia simulada de \emph{lat} iteraciones, ese mismo paquete será retenido, y se pondrá en cola para la iteración \emph{frame} recién cuando el cliente esté en la iteración \emph{summoned\_frame} + \emph{lat}.
 
 % Descripción del juego de pruebas, extraer parte importante del informe de avance.
 
@@ -32,5 +47,38 @@ Para mantener la implementación sencilla, el servidor se encarga de levantar un
 
 \begin{enumerate}
 	\item Esperar a que haya un \emph{stream} de datos listo para leer o recibir una notificación indicando que el \emph{buffer} de envío (\emph{stream} en cola que se debe enviar al cliente conectado) ha sido escrito por otro \emph{thread}. \textbf{Nota:} ambas cosas pueden pasar simultáneamente.
-	\item Recibir los datos desde el cliente remoto (leer datos recibidos) y agregarlos a un \emph{buffer} acumulativo.
+	\item Recibir los datos desde el cliente remoto (si es que hay información disponible para leer) y agregarlos a un \emph{buffer} acumulativo.
+	\item Si hay suficiente información en el \emph{buffer} acumulativo, seccionarlo tantas veces como sea posible en paquetes delimitados.
+	\item Escribir todos los paquetes seccionados a un \emph{buffer} histórico. Este buffer mantiene el stream que ha enviado el cliente durante todo el tiempo que ha estado conectado.
+	\item Escribir todos los paquetes seccionados en el \emph{buffer} de envío de todos los otros clientes conectados.
+	\item Enviar toda la información acumulada en el \emph{buffer} de envío.
 \end{enumerate}
+
+Con estos sencillos pasos se puede lograr un sistema que sea capaz de admitir conexiones en distintos puntos en la línea temporal manteniendo a todos los clientes sincronizados.
+
+\subsubsection*{Client-side}
+Para que las operaciones de red no interfieran con la lógica del cliente (que actualiza y renderiza el estado del juego), se genera una librería que hace la tarea de seccionar un \emph{stream} entrante en paquetes del protocolo, en segundo plano, de modo que se pueda obtener una cola de paquetes recibidos asíncronamente en la fase de procesamiento de eventos.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
