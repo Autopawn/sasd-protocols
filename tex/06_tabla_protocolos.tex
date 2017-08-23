@@ -55,13 +55,8 @@ Que se espere hasta detectar la inconsistencia permite resolver varias inconsist
 \end{longtable}
 \normalsize
 
-% TODO: Conclusiones (leer paper de seguridad).
-% En general puede ser malo revelar todo el estado al jugador, si se ocultan cosas al nivel del displayer del cliente pueden hacerse injusticias...
+De este análisis y de la lecutra de \cite{hu2008imewarpty} también se obtuvieron conclusiones generales, como que en ciertos casos es malo que un protocolo revele todo el estado del jugador (pues se pueden hacer trampas como ver a través de las paredes). Otra característica deseable puede ser el que los clientes afectados por inconsistencias o mala responsibidad sean los que tienen peor red respecto al resto.
 
-% TODO: Se destaca que una característica deseable puede ser el que los clientes afectados por inconsistencias o mala responsibidad sean los que tienen peor red respecto al resto.
-
-% TODO: Explicar un poco como cambiarán las cosas si se distribuyera el procesamiento de los estados.
-
-% TODO: Señalar los protocolos p2p y sus problemas (enviar eventos diferentes a otros clientes para hacer diverger el estado del juego o enviar eventos en el pasado) el problema de llegar a un consenso o excluír al jugador con faltas.
+Se ve que en general los protocolos \emph{p2p} y agregan desafíos adicionales de dificultad, por ejemplo se pueden enviar eventos diferentes a otros clientes para hacer diverger el estado del juego o enviar eventos en el pasado, teniéndose que problema de llegar a un consenso o excluír al jugador con faltas de manera \emph{democrática}.
 
 % NOTE: Señalar que aquí se pondrán conclusiones también en la introducción.
