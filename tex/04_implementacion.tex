@@ -1,5 +1,14 @@
 \section{Implementación}
 
+\subsection{Videojuego}
+
+El videojuego consiste en una serie de cuadrados \emph{negras} y de colores, las primeras se mueven automáticamente producto de reglas físicas previamente determinadas, mientras que las segundas son manejadas por los diferentes clientes (mediante el control de su aceleración), se tienen las siguiente reglas:
+
+\begin{itemize}
+\item Si dos pelotas de colores colisionan, la que lleva menos velocidad se destruye (luego vuelve a aparecer en otro lugar del mapa) y el jugador que maneja la otra gana un punto.
+\item Si en una colisión al menos una de las pelotas es negra, ambas rebotan.
+\item Si una pelota sale del mapa, es destruida (volviendo a aparecer en otro lado), si es de color el jugador que la maneja pierde un punto.
+\end{itemize}
 
 \subsection{Estructura general del \emph{framework}}
 
