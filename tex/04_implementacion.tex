@@ -11,3 +11,18 @@
 % Señalar que vamos a abstraer a los clientes de lo que hace el servidor, salvo por el hecho de que el cliente sabe que a través del servidor se hará el broadcast.
 
 % La programación del juego está dada por una función determinista f(s_i,e) = s_{i+1}, donde s_i es el estado en una frame específica y e es un conjunto de eventos realizados por usuarios.
+
+\subsection{Networking engine}
+Para la implementación de las interacciones de red, se usa como base el protocolo \texttt{TCP}. Esta elección se sustenta en que no es necesario tomar en cuenta el orden en que se envían los mensajes y su integridad; si bien es cierto que existen desventajas respecto a la latencia por el \emph{overhead} que produce, no causan mayor impacto en un entorno local.
+
+El mayor problema que supone el uso de \texttt{TCP} para nuestros propósitos, es que a nivel de usuario se trabaja como un stream de datos en vez de estar encapsulados en paquetes atómicos, debido a esto, el uso de este protocolo, supone mayor manipulación de la información para poder aislar los distintos mensajes enviados.
+
+Para facilitar estas interacciones, se desarrolla un sistema personalizado que se compone de 2 partes principales:
+
+\subsubsection*{Server-side}
+Para mantener la implementación sencilla, el servidor se encarga de levantar un \emph{thread} por cada cliente conectado. Cada uno de ellos sigue la siguiente secuencia:
+
+\begin{enumerate}
+	\item Esperar a que haya un \emph{stream} de datos listo para leer o recibir una notificación indicando que el \emph{buffer} de envío (\emph{stream} en cola que se debe enviar al cliente conectado) ha sido escrito por otro \emph{thread}. \textbf{Nota:} ambas cosas pueden pasar simultáneamente.
+	\item Recibir los datos desde el cliente remoto (leer datos recibidos) y agregarlos a un \emph{buffer} acumulativo.
+\end{enumerate}
