@@ -1,10 +1,12 @@
-\section{Introducción}
+\section*{Introducción}
 
 % El problema adicional en comparación con otros sistemas distribuídos al que se ven vistos los videojuegos es que requieren una interacción muy cercana con el usuario, si se sigue la analogía de una base de datos, un jugador equivaldría a hacer constantemente operaciones de lectura que deben responderse de manera inmediata y como esto no es posible, ...
 
-El objetivo de este trabajo es realizar una comparación práctica de diferentes métodos para lograr consistencia de un estado compartido entre varios clientes en un videojuego, y, posteriormente, realizar una comparación teórica sobre las diferentes arquitecturas que soporten un videojuego masivo multijugador, evaluando la compatibilidad y desempeño de estas con los protocolos, y haciendo un análisis de cuál sería la experiencia del usuario, cómo se manejan las inconsistencias, su seguridad y escalabilidad.
+El objetivo de este trabajo es realizar una comparación práctica de diferentes métodos para lograr consistencia de un estado compartido entre varios clientes en un videojuego, y, posteriormente, realizar una comparación teórica sobre las diferentes arquitecturas que soporten un videojuego masivo multijugador, para evaluar la compatibilidad y desempeño de estas, haciendo un análisis de cuál sería la experiencia del usuario, cómo se manejan las inconsistencias, su seguridad y escalabilidad.
 
-Dentro de este análisis se consideran juegos que requieren rápidos tiempos de respuesta, como son los \emph{shooters}, en desmedro de los que no, por ejemplo, juegos de estrategia basados en turnos.
+Dentro de este análisis se consideran juegos que requieren rápidos tiempos de respuesta, como son los \emph{shooters}, en desmedro de los que no, por ejemplo, juegos de estrategia basados en turnos, debido a que los primeros traen desafíos mayores también respecto a otros sistemas distribuídos, como la presencia de eventos continuos (que dependen del transcurrir del tiempo) y la constante observación de un usuario al que hay que darle la ilusión de que se encuentra compartiendo el mismo mundo virtual que otros.
+
+Para la comparación práctica de protocolos de sincronización, primero se comenzará listando modelos de consistencia en el Capítulo 1 pues estos sirven para formalizar los requisitos que se esperan de los protocolos, en el Capítulo 2 se listan una serie de protocolos a implementar, en el Capítulo 3 se señalan algunas arquitecturas para videojuegos MMO. En el Capítulo 4, a la mitad del trabajo se discute una implementación en C del framework para soportar los diferentes protocolos, así como de un juego que se hizo para realizar pruebas; los resultados cualitativos obtenidos se señalan en el Capítulo 5. Este trabajo finaliza, a partir de la información recopilada y la experiencia obtenida, con tablas que sumarizan conclusiones de los protocolos (Capítulo 6) y arquitecturas (Capítulo 7) y con las conclusiones finales en el Capítulo 8.
 
 % TODO: Indicar separación del trabajo:
 % en el capítulo 2 se presentarán los protocolos implementados...
@@ -12,6 +14,6 @@ Dentro de este análisis se consideran juegos que requieren rápidos tiempos de 
 
 % TODO: El trabajo debe enfocarse más en la combinación de las arquitecturas y los protocolos, sobretodo en las conclusiones.
 
-% Señalar el interés: no sólo en esta área pero en varias otras, (sistemas distribuídos, bases de datos distribuídas, sistemas de edición colaborativa) pero la diferencia crucial es la presencia de eventos continuos (haciendo obsoletos los otros modelos de consistencia).
+% Señalar el interés: no sólo en esta área pero en varias otras, (sistemas distribuídos, bases de datos distribuídas, sistemas de edición colaborativa) pero la .
 
 % TODO: Recordar diferencia entre métodos sincronicos y asincrónicos señalado en la propuesta de proyecto (todos los objetos avanzan juntos o no), hablar también de simulaciones discretas o continuas.
