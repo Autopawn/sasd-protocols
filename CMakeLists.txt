@@ -42,6 +42,11 @@ add_executable(game_timewarp
     ${SOURCE}/balls/draw.c
     ${SOURCE}/vec.c)
 
+add_executable(game_dead_reckoning
+        ${SOURCE}/game_dead_reckoning.c
+        ${SOURCE}/balls/balls.c
+        ${SOURCE}/balls/draw.c
+        ${SOURCE}/vec.c)
 
 add_executable(game
     ${SOURCE}/game.c
@@ -52,4 +57,5 @@ target_link_libraries(server netutils recvpool buffer ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(client netutils recvpool buffer ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(game ${SDL2_LIBRARIES})
 target_link_libraries(game_timewarp ${SDL2_LIBRARIES} netutils recvpool buffer)
+target_link_libraries(game_dead_reckoning ${SDL2_LIBRARIES} netutils recvpool buffer)
 target_link_libraries(recvpool ${CMAKE_THREAD_LIBS_INIT})
