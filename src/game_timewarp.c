@@ -170,8 +170,8 @@ int main(int argc, char* argv[])
 
     SDL_Event sdl_event;
 
+    Uint32 game_start = SDL_GetTicks();
     while (game_state.running) {
-        Uint32 frame_start = SDL_GetTicks();
         vec_set(&state_trace, frame, &stat);
 
         if (vec_get(event_trace, frame + local_lag, &ev_vec) == -1 || ev_vec == 0) {
@@ -274,8 +274,8 @@ int main(int argc, char* argv[])
                    game_state.screen.w, game_state.screen.h,32);
         SDL_RenderPresent(game_state.screen.renderer);
 
-        Uint32 frame_end = SDL_GetTicks();
-        int delay = 25 - (frame_end - frame_start);
+        Uint32 game_now = SDL_GetTicks();
+        int delay = game_start + 25 * frame - game_now;
 
         if (delay > 0) {
             SDL_Delay(delay);
