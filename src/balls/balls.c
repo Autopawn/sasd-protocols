@@ -83,8 +83,10 @@ void reset_ball(ball* ba, int seed)
 
 state advance_state(const state* ini, event* events, int n_events)
 {
-    // Sort events so that they work as a set and the function is deterministic.
-    qsort(events, n_events, sizeof(event), compare_events);
+    if(n_events>0){
+        // Sort events so that they work as a set and the function is deterministic.
+        qsort(events, n_events, sizeof(event), compare_events);
+    }
     // Create state copy:
     state newst = *ini;
     newst.frame += 1;

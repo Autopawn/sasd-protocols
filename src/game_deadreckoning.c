@@ -16,8 +16,8 @@
 #include <netutils.h>
 #include <balls/balls.h>
 
-static int input_lags[MAX_PLAYERS] = { 0, 200, 0, 0, 0, 0, 0, 0};
-static int local_lags[MAX_PLAYERS] = { 0,  0,  0, 0, 0, 0, 0, 0};
+static int input_lags[MAX_PLAYERS] = { 0,20, 0, 0, 0, 0, 0, 0};
+static int local_lags[MAX_PLAYERS] = {10,10,  0, 0, 0, 0, 0, 0};
 // ^ Must try to emulate the reception lag for the server.
 
 struct {
@@ -259,9 +259,8 @@ int main(int argc, char* argv[])
 
 		// Synchronize - Apply all events that have not been applied in server side
 		// to improve responsiveness
-        printf("%d %d\n",player,stat._lie);
 		for (int i = stat.frame; i < frame; i++) {
-			if (i - local_lags[player] <= stat._lie) {
+			if (0 && i - local_lags[player] <= stat._lie) {
 				stat = advance_state(&stat, NULL, 0);
 			} else {
 				if (i - local_lags[player] >= 0 && vec_get(event_trace, i - local_lags[player], &ev_vec) != -1 && ev_vec != 0) {
