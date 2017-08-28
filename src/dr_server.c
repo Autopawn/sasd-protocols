@@ -89,7 +89,7 @@ int main()
 		// Advance state with foreign events
 		stat = advance_state(&stat, evs, ev_count);
 		// Send new state - every 3 states
-		//if (should_send++ % 0 == 0) {
+		//if (should_send++ % 10 == 0) {
 			for (int i = 0; i < player_count; i++) {
 				stat._lie = players[i].lie;
 				send_packet(players[i].socket,

@@ -231,11 +231,13 @@ int main(int argc, char* argv[])
 				// last influential event
 				int lie = stat._lie;
 
-				for (int i = lie + 1; i <= frame; i++) {
+				/*for (int i = lie + 1; i <= frame; i++) {
 					if (vec_get(event_trace, i, &ev_vec) != -1 && ev_vec != 0) {
 						stat = advance_state(&stat, ev_vec->evs, ev_vec->wptr);
+					} else {
+						stat = advance_state(&stat, NULL, 0);
 					}
-				}
+				}*/
 
 				lsf = frame;
 
@@ -264,12 +266,27 @@ int main(int argc, char* argv[])
 				stat = advance_state(&stat, ev_vec->evs, ev_vec->wptr);
 			}
 		}*/
-		if (frame - DR_SERVER_LAG > lsf) {
-			if (vec_get(event_trace, frame - DR_SERVER_LAG, &ev_vec) != -1 && ev_vec != 0) {
-				stat = advance_state(&stat, ev_vec->evs, ev_vec->wptr);
+
+		for (int i = stat.frame; i < frame; i++) {
+			if (i - DR_SERVER_LAG <= stat._lie) {
+				stat = advance_state(&stat, NULL, 0);
+			} else {
+				if (vec_get(event_trace, i - DR_SERVER_LAG, &ev_vec) != -1 && ev_vec != 0) {
+					stat = advance_state(&stat, ev_vec->evs, ev_vec->wptr);
+				} else {
+					stat = advance_state(&stat, NULL, 0);
+				}
 			}
 		}
-		stat.frame = frame;
+
+		/*if (frame - DR_SERVER_LAG > lsf) {
+			if (vec_get(event_trace, frame - DR_SERVER_LAG, &ev_vec) != -1 && ev_vec != 0) {
+				stat = advance_state(&stat, ev_vec->evs, ev_vec->wptr);
+			} else {
+				stat = advance_state(&stat, NULL, 0);
+			}
+		}*/
+		//stat.frame = frame;
 		// Draw
 		draw_state(game_state.screen.renderer, &stat,
 		           game_state.screen.w, game_state.screen.h,64);
