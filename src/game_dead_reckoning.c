@@ -27,7 +27,7 @@ static int lags[MAX_PLAYERS][MAX_PLAYERS] = {
 		{0,  0,  0, 0, 0, 0, 0, 0}
 };
 
-#define DR_SERVER_LAG 4
+#define DR_SERVER_LAG 150
 
 struct {
 	int running;
@@ -125,11 +125,7 @@ int main(int argc, char* argv[])
 	// IMPORTANT: event trace only holds local events!
 	auto_vec_t event_trace = vec_create(trace_size, sizeof(ev_vec_t), 1);
 
-	int min_frame = 1;
 	int frame = 1;
-
-	// last server frame
-	int lsf = 0;
 
 	event ev;
 
@@ -171,9 +167,8 @@ int main(int argc, char* argv[])
 
 	SDL_Event sdl_event;
 
+	Uint32 game_start = SDL_GetTicks();
 	while (game_state.running) {
-		Uint32 frame_start = SDL_GetTicks();
-
 		if (vec_get(event_trace, frame, &ev_vec) == -1 || ev_vec == 0) {
 			ev_vec = ev_vec_create();
 			vec_set(&event_trace, frame, &ev_vec);
@@ -228,50 +223,15 @@ int main(int argc, char* argv[])
 			if (packet.ptype == STATE) {
 				// State is set to the server sent one
 				stat = packet.payload.state;
-				// last influential event
-				int lie = stat._lie;
-
-				/*for (int i = lie + 1; i <= frame; i++) {
-					if (vec_get(event_trace, i, &ev_vec) != -1 && ev_vec != 0) {
-						stat = advance_state(&stat, ev_vec->evs, ev_vec->wptr);
-					} else {
-						stat = advance_state(&stat, NULL, 0);
-					}
-				}*/
-
-				lsf = frame;
-
-				/*if (lie > frame) {
-					printf("Overestiating (lie: %d, frame: %d)\n", lie, frame);
-					// Overestimated lag - Delete all events
-					for (int i = frame; i <= lie; i++) {
-						if (vec_get(event_trace, i, &ev_vec) != -1 && ev_vec != 0) {
-							// Destroy event vector for frame i
-							ev_vec_destroy(ev_vec);
-							// Reset event trace at frame i
-							ev_vec = 0;
-							vec_set(&event_trace, i, &ev_vec);
-						}
-					}
-				}*/
-				// Advance state from last influential event in server
-				// note that if lie >= frame, there is nothing to update.
-				min_frame = lie + 1;
 			}
 		}
 		// Synchronize - Apply all events that have not been applied in server side
 		// to improve responsiveness
-		/*for (int i = min_frame; i <= frame; i++) {
-			if (vec_get(event_trace, i, &ev_vec) != -1 && ev_vec != 0) {
-				stat = advance_state(&stat, ev_vec->evs, ev_vec->wptr);
-			}
-		}*/
-
 		for (int i = stat.frame; i < frame; i++) {
 			if (i - DR_SERVER_LAG <= stat._lie) {
 				stat = advance_state(&stat, NULL, 0);
 			} else {
-				if (vec_get(event_trace, i - DR_SERVER_LAG, &ev_vec) != -1 && ev_vec != 0) {
+				if (i - DR_SERVER_LAG >= 0 && vec_get(event_trace, i - DR_SERVER_LAG, &ev_vec) != -1 && ev_vec != 0) {
 					stat = advance_state(&stat, ev_vec->evs, ev_vec->wptr);
 				} else {
 					stat = advance_state(&stat, NULL, 0);
@@ -279,21 +239,15 @@ int main(int argc, char* argv[])
 			}
 		}
 
-		/*if (frame - DR_SERVER_LAG > lsf) {
-			if (vec_get(event_trace, frame - DR_SERVER_LAG, &ev_vec) != -1 && ev_vec != 0) {
-				stat = advance_state(&stat, ev_vec->evs, ev_vec->wptr);
-			} else {
-				stat = advance_state(&stat, NULL, 0);
-			}
-		}*/
-		//stat.frame = frame;
 		// Draw
 		draw_state(game_state.screen.renderer, &stat,
 		           game_state.screen.w, game_state.screen.h,64);
 		SDL_RenderPresent(game_state.screen.renderer);
 
-		Uint32 frame_end = SDL_GetTicks();
-		int delay = 25 - (frame_end - frame_start);
+		//Uint32 frame_end = SDL_GetTicks();
+		Uint32 game_now = SDL_GetTicks();
+		int delay = game_start + 25 * frame - game_now;
+		//int delay = 25 - (frame_end - frame_start);
 
 		if (delay > 0) {
 			SDL_Delay(delay);

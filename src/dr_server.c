@@ -49,10 +49,9 @@ int main()
 	event evs[MAX_PLAYERS * 10]; // there should not be more than 10 events per client, unless ASIANS
 	int ev_count = 0;
 
-	int should_send = 0;
-
+	Uint32 game_start = SDL_GetTicks();
 	loop {
-		Uint32 frame_start = SDL_GetTicks();
+		//Uint32 frame_start = SDL_GetTicks();
 
 		// client socket
 		struct sockaddr addr;
@@ -88,19 +87,16 @@ int main()
 		}
 		// Advance state with foreign events
 		stat = advance_state(&stat, evs, ev_count);
-		// Send new state - every 3 states
-		//if (should_send++ % 10 == 0) {
-			for (int i = 0; i < player_count; i++) {
-				stat._lie = players[i].lie;
-				send_packet(players[i].socket,
-				            &stat, STATE);
-			}
-		//}
+		for (int i = 0; i < player_count; i++) {
+			stat._lie = players[i].lie;
+			send_packet(players[i].socket,
+			            &stat, STATE);
+		}
 		// Reset event buffer
 		ev_count = 0;
 		// Every frame should last 25 ms
-		Uint32 frame_end = SDL_GetTicks();
-		int delay = 25 - (frame_end - frame_start);
+		Uint32 game_now = SDL_GetTicks();
+		int delay = game_start + 25 * stat.frame - game_now;
 
 		if (delay > 0) {
 			SDL_Delay(delay);
