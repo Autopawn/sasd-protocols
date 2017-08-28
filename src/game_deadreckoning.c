@@ -16,7 +16,7 @@
 #include <netutils.h>
 #include <balls/balls.h>
 
-static int input_lags[MAX_PLAYERS] = { 0, 30, 30, 0, 0, 0, 0, 0};
+static int input_lags[MAX_PLAYERS] = { 0, 200, 0, 0, 0, 0, 0, 0};
 static int local_lags[MAX_PLAYERS] = { 0,  0,  0, 0, 0, 0, 0, 0};
 // ^ Must try to emulate the reception lag for the server.
 
@@ -235,7 +235,7 @@ int main(int argc, char* argv[])
 			}
 		}
 
-		// Broadcast events
+		// Send events
 		for (int i = 0; i < ev_vec->wptr; i++) {
 			// In this case, events are local
 			SDL_assert(ev_vec->evs[i].player == player);
@@ -245,7 +245,6 @@ int main(int argc, char* argv[])
 		// Receive states
 		while (recvpool_retrieve(&pool, &packet, 0) != -1) {
 			if (packet.ptype == STATE) {
-                printf("INCOMMING?\n");
                 st_vec_push(&state_memory,packet.payload.state);
 			}
 		}
@@ -260,6 +259,7 @@ int main(int argc, char* argv[])
 
 		// Synchronize - Apply all events that have not been applied in server side
 		// to improve responsiveness
+        printf("%d %d\n",player,stat._lie);
 		for (int i = stat.frame; i < frame; i++) {
 			if (i - local_lags[player] <= stat._lie) {
 				stat = advance_state(&stat, NULL, 0);

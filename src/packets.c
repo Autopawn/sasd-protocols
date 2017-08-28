@@ -198,7 +198,7 @@ buffer_t _ball_serialize(const ball* payload, buffer_t buffer)
 buffer_t _state_serialize(const state* payload)
 {
     // int32 + int32 * MAX_PLAYERS + (ball = 20 + N_BUTTONS) * N_BALLS + lie
-    buffer_t buffer = _header_serialize(4 + (4 * MAX_PLAYERS) + ((20 + N_BUTTONS) * N_BALLS) + 4, STATE);
+    buffer_t buffer = _header_serialize(1 + 4 + (4 * MAX_PLAYERS) + ((20 + N_BUTTONS) * N_BALLS) + 4, STATE);
     buffer_push_char(buffer, payload->paused);
     buffer_push_int32(buffer, payload->frame);
     for (int i = 0; i < MAX_PLAYERS; i++) {

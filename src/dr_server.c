@@ -66,6 +66,7 @@ int main()
 			recvpool_init(&players[player_count].pool);
 			recvpool_start(&players[player_count].pool, csocket);
 			players[player_count].socket = csocket;
+            players[player_count].lie = 0;
 
 			// handle connected client
 			struct handshake hs = { player_count++ };
