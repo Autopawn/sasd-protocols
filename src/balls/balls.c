@@ -98,7 +98,10 @@ state advance_state(const state* ini, event* events, int n_events)
         }
     }
     // Don't update balls if the game hasn't started:
-    if(newst.paused) return newst;
+    if(newst.paused){
+        printf("Paused?\n");
+        return newst;
+    }
     // Update the balls:
     for (int i = 0; i < N_BALLS; i++) {
         ball* ba = &newst.balls[i];

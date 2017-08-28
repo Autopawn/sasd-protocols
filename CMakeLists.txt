@@ -54,8 +54,8 @@ add_executable(game_fasteventordering
     ${SOURCE}/balls/draw.c
     ${SOURCE}/vec.c)
 
-add_executable(game_dead_reckoning
-    ${SOURCE}/game_dead_reckoning.c
+add_executable(game_deadreckoning
+    ${SOURCE}/game_deadreckoning.c
     ${SOURCE}/balls/balls.c
     ${SOURCE}/balls/draw.c
     ${SOURCE}/vec.c)
@@ -71,5 +71,5 @@ target_link_libraries(client netutils recvpool buffer ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(game ${SDL2_LIBRARIES})
 target_link_libraries(game_timewarp ${SDL2_LIBRARIES} netutils recvpool buffer)
 target_link_libraries(game_fasteventordering ${SDL2_LIBRARIES} netutils recvpool buffer)
-target_link_libraries(game_dead_reckoning ${SDL2_LIBRARIES} netutils recvpool buffer)
+target_link_libraries(game_deadreckoning ${SDL2_LIBRARIES} netutils recvpool buffer)
 target_link_libraries(recvpool ${CMAKE_THREAD_LIBS_INIT})

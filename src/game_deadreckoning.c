@@ -16,18 +16,9 @@
 #include <netutils.h>
 #include <balls/balls.h>
 
-static int lags[MAX_PLAYERS][MAX_PLAYERS] = {
-		{0,  0, 30, 0, 0, 0, 0, 0},
-		{0,  0, 30, 0, 0, 0, 0, 0},
-		{30, 0, 30, 0, 0, 0, 0, 0},
-		{0,  0,  0, 0, 0, 0, 0, 0},
-		{0,  0,  0, 0, 0, 0, 0, 0},
-		{0,  0,  0, 0, 0, 0, 0, 0},
-		{0,  0,  0, 0, 0, 0, 0, 0},
-		{0,  0,  0, 0, 0, 0, 0, 0}
-};
-
-#define LOCAL_LAG 30
+static int input_lags[MAX_PLAYERS] = { 0, 30, 30, 0, 0, 0, 0, 0};
+static int local_lags[MAX_PLAYERS] = { 0,  0,  0, 0, 0, 0, 0, 0};
+// ^ Must try to emulate the reception lag for the server.
 
 struct {
 	int running;
@@ -81,8 +72,13 @@ typedef struct {
 	int count;
 	int wptr;
 	event evs[];
-
 } *ev_vec_t;
+
+typedef struct {
+	int count;
+	int wptr;
+	state stats[];
+} *st_vec_t;
 
 ev_vec_t ev_vec_create()
 {
@@ -92,9 +88,22 @@ ev_vec_t ev_vec_create()
 	return ev_vec;
 }
 
+st_vec_t st_vec_create()
+{
+	st_vec_t st_vec = malloc(sizeof(*st_vec) + 8 * sizeof(state));
+	st_vec->count = 8;
+	st_vec->wptr = 0;
+	return st_vec;
+}
+
 void ev_vec_destroy(ev_vec_t ev_vec)
 {
 	free(ev_vec);
+}
+
+void st_vec_destroy(ev_vec_t st_vec)
+{
+	free(st_vec);
 }
 
 void ev_vec_push(ev_vec_t *ev_vec_ref, event ev)
@@ -110,6 +119,19 @@ void ev_vec_push(ev_vec_t *ev_vec_ref, event ev)
 	ev_vec->evs[ev_vec->wptr++] = ev;
 }
 
+void st_vec_push(st_vec_t *st_vec_ref, state st)
+{
+	st_vec_t st_vec = *st_vec_ref;
+
+	if (st_vec->wptr == st_vec->count) {
+		st_vec->count += st_vec->count / 2;
+		st_vec = *st_vec_ref = realloc(st_vec,
+		                               sizeof(*st_vec) + st_vec->count * sizeof(state));
+	}
+
+	st_vec->stats[st_vec->wptr++] = st;
+}
+
 // CLEAN!
 int main(int argc, char* argv[])
 {
@@ -120,7 +142,8 @@ int main(int argc, char* argv[])
 
 	int trace_size = 512;
 
-	//auto_vec_t state_trace = vec_create(trace_size, sizeof(state), 0);
+    int state_memory_access = 0;
+	st_vec_t state_memory = st_vec_create();
 
 	// IMPORTANT: event trace only holds local events!
 	auto_vec_t event_trace = vec_create(trace_size, sizeof(ev_vec_t), 1);
@@ -148,12 +171,9 @@ int main(int argc, char* argv[])
 	}
 
 	int32_t player = packet.payload.handshake.client_id;
-	char title[256];
-	sprintf(title, "%s client: %d", game_state.screen.name, player);
-	SDL_SetWindowTitle(game_state.screen.window, title);
 
 	event connect;
-	connect.frame = frame + LOCAL_LAG;
+	connect.frame = frame + local_lags[player];
 	connect.summon_frame = frame;
 	connect.button = N_BUTTONS;
 	connect.pressed = 1;
@@ -169,6 +189,10 @@ int main(int argc, char* argv[])
 
 	Uint32 game_start = SDL_GetTicks();
 	while (game_state.running) {
+        char title[256];
+        sprintf(title, "%s client: %d frame: %d", game_state.screen.name, player,frame);
+        SDL_SetWindowTitle(game_state.screen.window, title);
+
 		if (vec_get(event_trace, frame, &ev_vec) == -1 || ev_vec == 0) {
 			ev_vec = ev_vec_create();
 			vec_set(&event_trace, frame, &ev_vec);
@@ -181,7 +205,7 @@ int main(int argc, char* argv[])
 					break;
 				case SDL_KEYDOWN:
 				case SDL_KEYUP:
-					ev.frame = frame + LOCAL_LAG;
+					ev.frame = frame + local_lags[player];
 					ev.summon_frame = frame;
 					ev.player = player;
 					ev.pressed = (sdl_event.type == SDL_KEYDOWN);
@@ -218,20 +242,29 @@ int main(int argc, char* argv[])
 			send_packet(socket, ev_vec->evs + i, EVENT);
 		}
 
-		// Receive events
+		// Receive states
 		while (recvpool_retrieve(&pool, &packet, 0) != -1) {
 			if (packet.ptype == STATE) {
-				// State is set to the server sent one
-				stat = packet.payload.state;
+                printf("INCOMMING?\n");
+                st_vec_push(&state_memory,packet.payload.state);
 			}
 		}
+        // Load state according to the simulated input lag:
+        if(state_memory_access<state_memory->wptr){
+            state looked = state_memory->stats[state_memory_access];
+            if(frame>=looked.frame+input_lags[player]){
+                stat = looked;
+                state_memory_access++;
+            }
+        }
+
 		// Synchronize - Apply all events that have not been applied in server side
 		// to improve responsiveness
 		for (int i = stat.frame; i < frame; i++) {
-			if (i - LOCAL_LAG <= stat._lie) {
+			if (i - local_lags[player] <= stat._lie) {
 				stat = advance_state(&stat, NULL, 0);
 			} else {
-				if (i - LOCAL_LAG >= 0 && vec_get(event_trace, i - LOCAL_LAG, &ev_vec) != -1 && ev_vec != 0) {
+				if (i - local_lags[player] >= 0 && vec_get(event_trace, i - local_lags[player], &ev_vec) != -1 && ev_vec != 0) {
 					stat = advance_state(&stat, ev_vec->evs, ev_vec->wptr);
 				} else {
 					stat = advance_state(&stat, NULL, 0);
