@@ -113,7 +113,6 @@ void ev_vec_push(ev_vec_t *ev_vec_ref, event ev)
 // CLEAN!
 int main(int argc, char* argv[])
 {
-	// size | last_influential_event (instead of sender_id) | type | payload
 	game_init();
 
 	// Initial state, one ball is from player 0
@@ -128,6 +127,9 @@ int main(int argc, char* argv[])
 
 	int min_frame = 1;
 	int frame = 1;
+
+	// last server frame
+	int lsf = 0;
 
 	event ev;
 
@@ -162,7 +164,7 @@ int main(int argc, char* argv[])
 	connect.player = player;
 
 	ev_vec_t ev_vec = ev_vec_create();
-	vec_set(&event_trace, frame + DR_SERVER_LAG, &ev_vec);
+	vec_set(&event_trace, frame, &ev_vec);
 	ev_vec_push(&ev_vec, connect);
 
 	send_packet(socket, &connect, EVENT);
@@ -171,11 +173,10 @@ int main(int argc, char* argv[])
 
 	while (game_state.running) {
 		Uint32 frame_start = SDL_GetTicks();
-		//vec_set(&state_trace, frame, &stat);
 
-		if (vec_get(event_trace, frame + DR_SERVER_LAG, &ev_vec) == -1 || ev_vec == 0) {
+		if (vec_get(event_trace, frame, &ev_vec) == -1 || ev_vec == 0) {
 			ev_vec = ev_vec_create();
-			vec_set(&event_trace, frame + DR_SERVER_LAG, &ev_vec);
+			vec_set(&event_trace, frame, &ev_vec);
 		}
 
 		while (SDL_PollEvent(&sdl_event)) {
@@ -223,14 +224,23 @@ int main(int argc, char* argv[])
 		}
 
 		// Receive events
-		while (recvpool_retrieve(&pool, &packet, 1) != -1) {
+		while (recvpool_retrieve(&pool, &packet, 0) != -1) {
 			if (packet.ptype == STATE) {
 				// State is set to the server sent one
 				stat = packet.payload.state;
 				// last influential event
-				int lie = packet.sender_id;
+				int lie = stat._lie;
 
-				if (lie > frame) {
+				for (int i = lie + 1; i <= frame; i++) {
+					if (vec_get(event_trace, i, &ev_vec) != -1 && ev_vec != 0) {
+						stat = advance_state(&stat, ev_vec->evs, ev_vec->wptr);
+					}
+				}
+
+				lsf = frame;
+
+				/*if (lie > frame) {
+					printf("Overestiating (lie: %d, frame: %d)\n", lie, frame);
 					// Overestimated lag - Delete all events
 					for (int i = frame; i <= lie; i++) {
 						if (vec_get(event_trace, i, &ev_vec) != -1 && ev_vec != 0) {
@@ -241,21 +251,26 @@ int main(int argc, char* argv[])
 							vec_set(&event_trace, i, &ev_vec);
 						}
 					}
-				}
-
+				}*/
 				// Advance state from last influential event in server
 				// note that if lie >= frame, there is nothing to update.
 				min_frame = lie + 1;
 			}
 		}
-
 		// Synchronize - Apply all events that have not been applied in server side
 		// to improve responsiveness
-		for (int i = min_frame; i <= frame; i++) {
+		/*for (int i = min_frame; i <= frame; i++) {
 			if (vec_get(event_trace, i, &ev_vec) != -1 && ev_vec != 0) {
 				stat = advance_state(&stat, ev_vec->evs, ev_vec->wptr);
 			}
+		}*/
+		if (frame - DR_SERVER_LAG > lsf) {
+			if (vec_get(event_trace, frame - DR_SERVER_LAG, &ev_vec) != -1 && ev_vec != 0) {
+				stat = advance_state(&stat, ev_vec->evs, ev_vec->wptr);
+			}
 		}
+		stat.frame = frame;
+		// Draw
 		draw_state(game_state.screen.renderer, &stat,
 		           game_state.screen.w, game_state.screen.h,64);
 		SDL_RenderPresent(game_state.screen.renderer);
@@ -267,7 +282,6 @@ int main(int argc, char* argv[])
 			SDL_Delay(delay);
 		}
 		frame++;
-		min_frame = frame;
 	}
 
 	game_quit();

@@ -28,6 +28,8 @@ typedef struct {
     int32_t frame;
     int32_t scores[MAX_PLAYERS];
     ball balls[N_BALLS];
+	// Last Influential Event (dead reckoning specific)
+	int32_t _lie;
 } state;
 
 typedef struct {

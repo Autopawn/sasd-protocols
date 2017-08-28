@@ -5,6 +5,7 @@
 
 #include <string.h>
 #include <sys/socket.h>
+#include <balls/balls.h>
 
 #define TRY(ret)   \
     if (ret == -1) \
@@ -59,6 +60,7 @@ int _state_deserialize(buffer_t data, state* payload)
     for (int i = 0; i < N_BALLS; i++) {
         TRY(_ball_deserialize(data, &payload->balls[i]));
     }
+    TRY(buffer_pop_int32(data, &payload->_lie));
     return 0;
 }
 
@@ -194,8 +196,8 @@ buffer_t _ball_serialize(const ball* payload, buffer_t buffer)
 
 buffer_t _state_serialize(const state* payload)
 {
-    // int32 + int32 * MAX_PLAYERS + (ball = 20 + N_BUTTONS) * MAX_PLAYERS
-    buffer_t buffer = _header_serialize(4 + (4 * MAX_PLAYERS) + ((20 + N_BUTTONS) * N_BALLS), STATE);
+    // int32 + int32 * MAX_PLAYERS + (ball = 20 + N_BUTTONS) * N_BALLS + lie
+    buffer_t buffer = _header_serialize(4 + (4 * MAX_PLAYERS) + ((20 + N_BUTTONS) * N_BALLS) + 4, STATE);
     buffer_push_int32(buffer, payload->frame);
     for (int i = 0; i < MAX_PLAYERS; i++) {
         buffer_push_int32(buffer, payload->scores[i]);
@@ -203,6 +205,7 @@ buffer_t _state_serialize(const state* payload)
     for (int i = 0; i < N_BALLS; i++) {
         _ball_serialize(&payload->balls[i], buffer);
     }
+    buffer_push_int32(buffer, payload->_lie);
     return buffer;
 }
 

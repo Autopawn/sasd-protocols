@@ -12,6 +12,8 @@
 
 #include <buffer.h>
 #include <bvec.h>
+#include <errno.h>
+#include <assert.h>
 
 void pqueue_init(packet_queue_t* pqueue)
 {
