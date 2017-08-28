@@ -4,6 +4,7 @@ state initial_state(int32_t frame)
 {
     state st;
     st.frame = frame;
+    st.death_count=0;
     for (int i = 0; i < MAX_PLAYERS; i++)
         st.scores[i] = 0;
     int legion_size = 0;
@@ -18,6 +19,7 @@ state initial_state(int32_t frame)
         for (int r = 0; r < N_BUTTONS; r++)
             st.balls[i].button_states[r] = 0;
     }
+    st.paused = 1;
     return st;
 }
 
@@ -70,12 +72,13 @@ int collide_balls(ball* ball_a, ball* ball_b)
     return 0;
 }
 
-void reset_ball(ball* ba, int frame)
+void reset_ball(ball* ba, int seed)
 {
     ba->v_x = 0;
     ba->v_y = 0;
-    ba->p_x = (3 + (frame % 3)) * ARENA_SIZE / 9;
-    ba->p_y = (3 + ((frame / 3) % 3)) * ARENA_SIZE / 9;
+    seed *= 11;
+    ba->p_x = (3 + (seed % 3)) * ARENA_SIZE / 9;
+    ba->p_y = (3 + ((seed / 3) % 3)) * ARENA_SIZE / 9;
 }
 
 state advance_state(const state* ini, event* events, int n_events)
@@ -85,13 +88,17 @@ state advance_state(const state* ini, event* events, int n_events)
     // Create state copy:
     state newst = *ini;
     newst.frame += 1;
+    // ^ NOTE: CANNOT USE FRAME FROM NOW ON! BREAKS DETERMINISTIC BEHAVIOUR.
     // Connect players:
     for (int k = 0; k < n_events; k++) {
         event ev = events[k];
         if(ev.button == N_BUTTONS){
             newst.balls[ev.player].player = ev.pressed? ev.player:-1;
+            newst.paused = 0;
         }
     }
+    // Don't update balls if the game hasn't started:
+    if(newst.paused) return newst;
     // Update the balls:
     for (int i = 0; i < N_BALLS; i++) {
         ball* ba = &newst.balls[i];
@@ -139,7 +146,8 @@ state advance_state(const state* ini, event* events, int n_events)
         // Reset ball if it falls outside:
         if (ba->p_x < 0 || ba->p_y < 0
             || ba->p_x >= ARENA_SIZE || ba->p_y >= ARENA_SIZE) {
-            reset_ball(ba, newst.frame);
+            reset_ball(ba, newst.death_count);
+            newst.death_count++;
             if (ba->player >= 0) {
                 newst.scores[ba->player] -= 1;
                 if(newst.scores[ba->player]<0) newst.scores[ba->player]=0;
@@ -152,11 +160,13 @@ state advance_state(const state* ini, event* events, int n_events)
             int res = collide_balls(&newst.balls[a], &newst.balls[b]);
             if (res == -1) {
                 newst.scores[newst.balls[b].player] += 1;
-                reset_ball(&newst.balls[a], newst.frame);
+                reset_ball(&newst.balls[a], newst.death_count);
+                newst.death_count++;
             }
             if (res == +1) {
                 newst.scores[newst.balls[a].player] += 1;
-                reset_ball(&newst.balls[b], newst.frame);
+                reset_ball(&newst.balls[b], newst.death_count);
+                newst.death_count++;
             }
         }
     }

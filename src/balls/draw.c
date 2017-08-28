@@ -55,6 +55,13 @@ void draw_state(SDL_Renderer* renderer, const state *stat,
             2*ball_radious-1,2*ball_radious-1};
         SDL_Rect smaller_circle = {pos_x-ball_radious+3, pos_y-ball_radious+3,
             2*ball_radious-5,2*ball_radious-5};
+        int inner_x=0, inner_y=0;
+        inner_x += stat->balls[i].button_states[0];
+        inner_x -= stat->balls[i].button_states[2];
+        inner_y -= stat->balls[i].button_states[1];
+        inner_y += stat->balls[i].button_states[3];
+        smaller_circle.x += ball_radious/2*inner_x;
+        smaller_circle.y += ball_radious/2*inner_y;
         SDL_RenderDrawRect(renderer,&circle);
         SDL_RenderDrawRect(renderer,&smaller_circle);
         if(stat->balls[i].player>=0){

@@ -25,7 +25,9 @@ typedef struct {
 } ball;
 
 typedef struct {
+    char paused;
     int32_t frame;
+    int32_t death_count;
     int32_t scores[MAX_PLAYERS];
     ball balls[N_BALLS];
 	// Last Influential Event (dead reckoning specific)

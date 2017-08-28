@@ -15,6 +15,8 @@ def tss_table(delay_table):
                 if dif_temp > max_dif:
                     max_dif = dif_temp
             difs[pi] = max_dif
+        print("min dif:")
+        print(np.min(difs))
         if not np.min(difs)<=0: continue
         # Calcular los ajustes a cada nodo:
         adjusts = np.zeros((n,n))
@@ -34,7 +36,7 @@ n = 4
 delay_table = (5*np.random.random((n,n))).astype(int)
 delay_table = np.abs(delay_table-delay_table.T)+1
 
-delay_table = np.array([[1,3,4,1],[3,1,2,2],[4,2,1,3],[1,2,3,1]])
+delay_table = np.array([[0,0,30],[0,0,30],[30,30,0]])
 
 print("Matrix of delays:")
 print(delay_table)

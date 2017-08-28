@@ -2,10 +2,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define SCREEN_W 640
-#define SCREEN_H 480
+#define SCREEN_W 350
+#define SCREEN_H 350
 #define SCREEN_SCALE 1
-#define SCREEN_NAME "sasd-protocols timewarp"
+#define SCREEN_NAME "sasd-protocols fast-event-ordering"
 
 #include "balls/balls.h"
 #include "balls/draw.h"
@@ -18,15 +18,54 @@
 #include <balls/balls.h>
 
 static int lags[MAX_PLAYERS][MAX_PLAYERS] = {
-    {0,  0, 30, 0, 0, 0, 0, 0},
-    {0,  0, 30, 0, 0, 0, 0, 0},
-    {30, 0, 30, 0, 0, 0, 0, 0},
-    {0,  0,  0, 0, 0, 0, 0, 0},
-    {0,  0,  0, 0, 0, 0, 0, 0},
-    {0,  0,  0, 0, 0, 0, 0, 0},
-    {0,  0,  0, 0, 0, 0, 0, 0},
-    {0,  0,  0, 0, 0, 0, 0, 0}
+    { 0,  0, 30, 0, 0, 0, 0, 0},
+    { 0,  0, 30, 0, 0, 0, 0, 0},
+    {30, 30,  0, 0, 0, 0, 0, 0},
+    { 0,  0,  0, 0, 0, 0, 0, 0},
+    { 0,  0,  0, 0, 0, 0, 0, 0},
+    { 0,  0,  0, 0, 0, 0, 0, 0},
+    { 0,  0,  0, 0, 0, 0, 0, 0},
+    { 0,  0,  0, 0, 0, 0, 0, 0}
 };
+
+static int n_clients;
+static int delays[MAX_PLAYERS][MAX_PLAYERS];
+
+int compute_delays(){
+    printf("clients: %d\n",n_clients);
+    int difs[MAX_PLAYERS];
+    for(int p_ref=n_clients-1;p_ref>=0;p_ref--){
+        for(int i=0;i<n_clients;i++) difs[i]=0;
+        for(int p_i=0;p_i<n_clients;p_i++){
+            if(p_i==p_ref) continue;
+            int max_dif = -1;
+            for(int p_j=0;p_j<n_clients;p_j++){
+                int dif_temp = lags[p_j][p_i]-lags[p_j][p_ref];
+                if(dif_temp>max_dif) max_dif = dif_temp;
+            }
+            difs[p_i] = max_dif;
+        }
+        //
+        int min_dif = difs[0];
+        for(int i=1;i<n_clients;i++){
+            if(difs[i]<min_dif) min_dif = difs[i];
+        }
+        printf("min_dif: %d\n",min_dif);
+        if(min_dif>0) continue;
+        // Calculate and print the adjusts for each node.
+        printf("Adjusts:\n");
+        for(int myid=0;myid<n_clients;myid++){
+            for(int p_i=0;p_i<n_clients;p_i++){
+                int adjust =  difs[p_i]-(lags[myid][p_i]-lags[myid][p_ref]);
+                delays[myid][p_i] = lags[myid][p_i]+adjust;
+                printf("%4d",delays[myid][p_i]);
+            }
+            printf("\n");
+        }
+        return 1;
+    }
+    return 0;
+}
 
 struct {
     int running;
@@ -112,6 +151,16 @@ void ev_vec_push(ev_vec_t *ev_vec_ref, event ev)
 // CLEAN!
 int main(int argc, char* argv[])
 {
+    if(argc!=2){
+        printf("Usage: %s <n_clients>\n",argv[0]);
+        exit(1);
+    }
+    printf("argv1 %s\n",argv[1]);
+    sscanf(argv[1],"%d",&n_clients);
+    if(!compute_delays()){
+        printf("Algorithm failed!\n");
+    }
+
     game_init();
 
     // Initial state
@@ -127,8 +176,6 @@ int main(int argc, char* argv[])
 
     int min_frame = 1;
     int frame = 1;
-
-    int local_lag = 8;
 
     event ev;
 
@@ -156,14 +203,15 @@ int main(int argc, char* argv[])
 	SDL_SetWindowTitle(game_state.screen.window, title);
 
     event connect;
-    connect.frame = frame + local_lag;
+    connect.frame = frame+delays[player][player];
+    // ^ On FEO the execution frame is not controlled by the client.
     connect.summon_frame = frame;
     connect.button = N_BUTTONS;
     connect.pressed = 1;
 	connect.player = player;
 
     ev_vec_t ev_vec = ev_vec_create();
-    vec_set(&event_trace, frame + local_lag, &ev_vec);
+    vec_set(&event_trace, connect.frame, &ev_vec);
     ev_vec_push(&ev_vec, connect);
 
     send_packet(socket, &connect, EVENT);
@@ -174,9 +222,9 @@ int main(int argc, char* argv[])
         Uint32 frame_start = SDL_GetTicks();
         vec_set(&state_trace, frame, &stat);
 
-        if (vec_get(event_trace, frame + local_lag, &ev_vec) == -1 || ev_vec == 0) {
+        if (vec_get(event_trace, frame + delays[player][player], &ev_vec) == -1 || ev_vec == 0) {
             ev_vec = ev_vec_create();
-            vec_set(&event_trace, frame + local_lag, &ev_vec);
+            vec_set(&event_trace, frame + delays[player][player], &ev_vec);
         }
 
         while (SDL_PollEvent(&sdl_event)) {
@@ -186,7 +234,7 @@ int main(int argc, char* argv[])
                 break;
             case SDL_KEYDOWN:
             case SDL_KEYUP:
-                ev.frame = frame + local_lag;
+                ev.frame = frame + delays[player][player];
                 ev.summon_frame = frame;
                 ev.player = player;
                 ev.pressed = (sdl_event.type == SDL_KEYDOWN);
@@ -227,7 +275,9 @@ int main(int argc, char* argv[])
         while (recvpool_retrieve(&pool, &packet, 1) != -1) {
             if (packet.ptype == EVENT) {
                 event remote_ev = packet.payload.event;
-
+                // FEO Requires that the execution frame is set to this one:
+                remote_ev.frame = remote_ev.summon_frame +
+                    delays[player][remote_ev.player];
                 int q = remote_ev.summon_frame + lags[player][remote_ev.player];
                 q = (lags[player][remote_ev.player] == 0 || q < frame) ? frame : q;
 
