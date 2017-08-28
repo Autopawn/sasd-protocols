@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define SCREEN_W 350
-#define SCREEN_H 350
+#define SCREEN_W 640
+#define SCREEN_H 480
 #define SCREEN_SCALE 1
 #define SCREEN_NAME "sasd-protocols fast-event-ordering"
 
@@ -159,6 +159,7 @@ int main(int argc, char* argv[])
     sscanf(argv[1],"%d",&n_clients);
     if(!compute_delays()){
         printf("Algorithm failed!\n");
+        exit(1);
     }
 
     game_init();
