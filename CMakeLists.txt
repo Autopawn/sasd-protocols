@@ -73,3 +73,10 @@ target_link_libraries(game_timewarp ${SDL2_LIBRARIES} netutils recvpool buffer)
 target_link_libraries(game_fasteventordering ${SDL2_LIBRARIES} netutils recvpool buffer)
 target_link_libraries(game_deadreckoning ${SDL2_LIBRARIES} netutils recvpool buffer)
 target_link_libraries(recvpool ${CMAKE_THREAD_LIBS_INIT})
+
+install(FILES
+            ${SOURCE}/dr_start.sh
+            ${SOURCE}/tw_start.sh
+            ${SOURCE}/feo_start.sh
+        DESTINATION
+            ${CMAKE_CURRENT_SOURCE_DIR}/build)
