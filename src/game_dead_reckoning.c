@@ -244,10 +244,8 @@ int main(int argc, char* argv[])
 		           game_state.screen.w, game_state.screen.h,64);
 		SDL_RenderPresent(game_state.screen.renderer);
 
-		//Uint32 frame_end = SDL_GetTicks();
 		Uint32 game_now = SDL_GetTicks();
 		int delay = game_start + 25 * frame - game_now;
-		//int delay = 25 - (frame_end - frame_start);
 
 		if (delay > 0) {
 			SDL_Delay(delay);
