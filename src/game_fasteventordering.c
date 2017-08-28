@@ -321,7 +321,7 @@ int main(int argc, char* argv[])
             vec_set(&state_trace, i, &stat);
         }
         draw_state(game_state.screen.renderer, &stat,
-                   game_state.screen.w, game_state.screen.h,64);
+                   game_state.screen.w, game_state.screen.h,32);
         SDL_RenderPresent(game_state.screen.renderer);
 
         Uint32 frame_end = SDL_GetTicks();

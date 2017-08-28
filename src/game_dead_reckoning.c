@@ -27,7 +27,7 @@ static int lags[MAX_PLAYERS][MAX_PLAYERS] = {
 		{0,  0,  0, 0, 0, 0, 0, 0}
 };
 
-#define DR_SERVER_LAG 4
+#define DR_SERVER_LAG 30
 
 struct {
 	int running;
@@ -289,7 +289,7 @@ int main(int argc, char* argv[])
 		//stat.frame = frame;
 		// Draw
 		draw_state(game_state.screen.renderer, &stat,
-		           game_state.screen.w, game_state.screen.h,64);
+		           game_state.screen.w, game_state.screen.h,32);
 		SDL_RenderPresent(game_state.screen.renderer);
 
 		Uint32 frame_end = SDL_GetTicks();
